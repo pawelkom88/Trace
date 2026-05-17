@@ -92,7 +92,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .onChange(of: hapticsEnabled) { newValue in
+            .onChange(of: hapticsEnabled) { oldValue, newValue in
                 HapticsManager.shared.isEnabled = newValue
             }
             .alert("StoreKit Status", isPresented: Binding(
