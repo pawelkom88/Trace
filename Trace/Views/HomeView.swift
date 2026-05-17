@@ -19,27 +19,40 @@ struct HomeView: View {
                 DesignSystem.GradientToken.backgroundGlow.ignoresSafeArea()
                 
                 VStack(spacing: DesignSystem.Spacing.xl) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("PRESTIGE SCORE")
-                                .font(DesignSystem.Typography.caption)
-                                .foregroundColor(DesignSystem.ColorToken.textSecondary)
-                                .tracking(1.5)
-                            Text("\(progressStore.progress.globalPrestigeScore)")
-                                .font(DesignSystem.Typography.title)
-                                .foregroundColor(.yellow)
+                    if progressStore.progress.globalPrestigeScore > 0 {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("PRESTIGE SCORE")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                                    .tracking(1.5)
+                                Text("\(progressStore.progress.globalPrestigeScore)")
+                                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                                    .foregroundColor(.yellow)
+                            }
+                            Spacer()
                         }
+                        .padding(.horizontal, DesignSystem.Spacing.xl)
+                        .padding(.top, 50)
+                    } else {
                         Spacer()
+                            .frame(height: 50)
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.xl)
-                    .padding(.top, 50) // Give space for top safe area if ignoresSafeArea causes overlap
                     
                     Spacer()
                     
                     VStack(spacing: DesignSystem.Spacing.sm) {
-                        Text("Trace")
-                            .font(DesignSystem.Typography.heroScore)
-                            .foregroundColor(.white)
+                        Text("TRACE")
+                            .font(.system(size: 72, weight: .black, design: .rounded))
+                            .tracking(8)
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [.white, .white.opacity(0.8)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                            .shadow(color: Color.white.opacity(0.15), radius: 10, x: 0, y: 5)
                         
                         Text("Watch it. Trace it. Don’t lift.")
                             .font(DesignSystem.Typography.subtitle)

@@ -114,28 +114,100 @@ struct LevelRepository {
         createLevel(id: 8, title: "Z-Shape", diff: .normal, points: zShape())
         createLevel(id: 9, title: "S-Curve", diff: .normal, points: sCurve())
         createLevel(id: 10, title: "U-Turn", diff: .normal, points: curve(x1: 0.3, y1: 0.3, cx: 0.5, cy: 0.9, x2: 0.7, y2: 0.3))
-        createLevel(id: 11, title: "Valley", diff: .normal, points: curve(x1: 0.2, y1: 0.2, cx: 0.5, cy: 0.8, x2: 0.8, y2: 0.2))
+        
+        // Level 11: Completely unique "Wobble" pattern
+        createLevel(id: 11, title: "Wobble", diff: .normal, points: [
+            NormalizedPoint(x: 0.2, y: 0.5),
+            NormalizedPoint(x: 0.4, y: 0.2),
+            NormalizedPoint(x: 0.6, y: 0.8),
+            NormalizedPoint(x: 0.8, y: 0.5)
+        ])
+        
         createLevel(id: 12, title: "Staircase", diff: .normal, points: [NormalizedPoint(x: 0.2, y: 0.2), NormalizedPoint(x: 0.4, y: 0.2), NormalizedPoint(x: 0.4, y: 0.5), NormalizedPoint(x: 0.6, y: 0.5), NormalizedPoint(x: 0.6, y: 0.8), NormalizedPoint(x: 0.8, y: 0.8)])
-        createLevel(id: 13, title: "Slick Curve", diff: .normal, points: curve(x1: 0.2, y1: 0.2, cx: 0.2, cy: 0.9, x2: 0.9, y2: 0.9))
+        
+        // Level 13: Completely unique "Square Spiral"
+        createLevel(id: 13, title: "Square Spiral", diff: .normal, points: [
+            NormalizedPoint(x: 0.8, y: 0.8),
+            NormalizedPoint(x: 0.2, y: 0.8),
+            NormalizedPoint(x: 0.2, y: 0.2),
+            NormalizedPoint(x: 0.6, y: 0.2),
+            NormalizedPoint(x: 0.6, y: 0.6),
+            NormalizedPoint(x: 0.4, y: 0.6)
+        ])
+        
         createLevel(id: 14, title: "Hook", diff: .normal, points: [NormalizedPoint(x: 0.5, y: 0.2), NormalizedPoint(x: 0.5, y: 0.7)] + curve(x1: 0.5, y1: 0.7, cx: 0.5, cy: 0.9, x2: 0.3, y2: 0.8))
         createLevel(id: 15, title: "Loop", diff: .normal, points: curve(x1: 0.3, y1: 0.5, cx: 0.1, cy: 0.1, x2: 0.5, y2: 0.2) + curve(x1: 0.5, y1: 0.2, cx: 0.9, cy: 0.3, x2: 0.7, y2: 0.6))
         
-        // Levels 16-75: Paid (Normal, Hard, Expert)
-        let families: [(String, () -> [NormalizedPoint])] = [
-            ("Straight", { straight(x1: Double.random(in: 0.2...0.8), y1: Double.random(in: 0.2...0.8), x2: Double.random(in: 0.2...0.8), y2: Double.random(in: 0.2...0.8)) }),
-            ("Curve", { curve(x1: Double.random(in: 0.1...0.9), y1: Double.random(in: 0.1...0.9), cx: Double.random(in: 0.1...0.9), cy: Double.random(in: 0.1...0.9), x2: Double.random(in: 0.1...0.9), y2: Double.random(in: 0.1...0.9)) }),
-            ("ZigZag", { [NormalizedPoint(x: 0.2, y: 0.2), NormalizedPoint(x: 0.8, y: 0.5), NormalizedPoint(x: 0.2, y: 0.8)] }),
-            ("M-Shape", { [NormalizedPoint(x: 0.2, y: 0.8), NormalizedPoint(x: 0.3, y: 0.2), NormalizedPoint(x: 0.5, y: 0.6), NormalizedPoint(x: 0.7, y: 0.2), NormalizedPoint(x: 0.8, y: 0.8)] })
-        ]
+        // Levels 16-50: Premium (Normal, Hard, Expert) with Weekly Rotation
+        // Seed based on current week and year
+        let calendar = Calendar.current
+        let date = Date()
+        let week = calendar.component(.weekOfYear, from: date)
+        let year = calendar.component(.yearForWeekOfYear, from: date)
         
-        for id in 16...75 {
+        // Simple Linear Congruential Generator for reproducible random patterns per week
+        struct SeededGenerator {
+            var state: UInt64
+            init(seed: Int) { self.state = UInt64(seed) }
+            mutating func nextDouble(in range: ClosedRange<Double>) -> Double {
+                state = state &* 6364136223846793005 &+ 1442695040888963407
+                let fraction = Double(state >> 11) * (1.0 / 9007199254740991.0)
+                return range.lowerBound + fraction * (range.upperBound - range.lowerBound)
+            }
+        }
+        
+        for id in 16...50 {
+            // Difficulty ramps up
             let diff: TraceDifficulty
-            if id < 35 { diff = .normal }
-            else if id < 60 { diff = .hard }
+            if id < 30 { diff = .normal }
+            else if id < 42 { diff = .hard }
             else { diff = .expert }
             
-            let family = families[id % families.count]
-            createLevel(id: id, title: "\(family.0) \(id)", diff: diff, points: family.1())
+            // Unique seed for each level that changes weekly
+            let levelSeed = year * 1000 + week * 100 + id
+            var rng = SeededGenerator(seed: levelSeed)
+            
+            // Complexity increases with level ID
+            let minPoints = 3 + (id - 16) / 8 // Ramps up point count
+            let maxPoints = minPoints + 2
+            let pointCount = Int(rng.nextDouble(in: Double(minPoints)...Double(maxPoints)))
+            
+            var generatedPoints: [NormalizedPoint] = []
+            
+            // Determine if this is a sharp zigzag shape or a smooth curve sequence
+            let isSmooth = rng.nextDouble(in: 0...1) > 0.5
+            
+            if isSmooth {
+                var currentX = rng.nextDouble(in: 0.2...0.8)
+                var currentY = rng.nextDouble(in: 0.2...0.8)
+                
+                for _ in 0..<pointCount {
+                    let nextX = rng.nextDouble(in: 0.1...0.9)
+                    let nextY = rng.nextDouble(in: 0.1...0.9)
+                    let cx = rng.nextDouble(in: 0.1...0.9)
+                    let cy = rng.nextDouble(in: 0.1...0.9)
+                    
+                    let newSegment = curve(x1: currentX, y1: currentY, cx: cx, cy: cy, x2: nextX, y2: nextY)
+                    if generatedPoints.isEmpty {
+                        generatedPoints.append(contentsOf: newSegment)
+                    } else {
+                        // avoid duplicating the connecting point
+                        generatedPoints.append(contentsOf: newSegment.dropFirst())
+                    }
+                    
+                    currentX = nextX
+                    currentY = nextY
+                }
+            } else {
+                for _ in 0...pointCount {
+                    generatedPoints.append(NormalizedPoint(
+                        x: rng.nextDouble(in: 0.15...0.85),
+                        y: rng.nextDouble(in: 0.15...0.85)
+                    ))
+                }
+            }
+            
+            createLevel(id: id, title: "Week \(week) - \(id)", diff: diff, points: generatedPoints)
         }
         
         return generatedLevels

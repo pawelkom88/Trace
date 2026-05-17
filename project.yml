@@ -16,5 +16,7 @@ targets:
       INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
       INFOPLIST_KEY_LSRequiresIPhoneOS: YES
       INFOPLIST_KEY_UIRequiresFullScreen: YES
+      INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+      INFOPLIST_KEY_UISupportedInterfaceOrientations~ipad: UIInterfaceOrientationPortrait
       PRODUCT_BUNDLE_IDENTIFIER: com.example.Trace
       SWIFT_VERSION: 5.0
