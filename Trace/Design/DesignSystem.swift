@@ -12,7 +12,6 @@ enum DesignSystem {
         
         static let accentBlue = Color(red: 0.2, green: 0.5, blue: 1.0)
         static let accentCyan = Color(red: 0.2, green: 0.9, blue: 1.0)
-        static let accentViolet = Color(red: 0.6, green: 0.2, blue: 1.0)
         
         static let success = Color.green
         static let warning = Color.yellow
@@ -21,13 +20,13 @@ enum DesignSystem {
     
     enum GradientToken {
         static let primaryCTA = LinearGradient(
-            colors: [ColorToken.accentBlue, ColorToken.accentViolet],
+            colors: [ColorToken.accentCyan, ColorToken.accentBlue],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
         
         static let gestureTrail = LinearGradient(
-            colors: [ColorToken.accentCyan, ColorToken.accentBlue, ColorToken.accentViolet],
+            colors: [ColorToken.accentCyan, ColorToken.accentBlue],
             startPoint: .leading,
             endPoint: .trailing
         )

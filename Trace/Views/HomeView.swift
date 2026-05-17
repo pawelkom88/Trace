@@ -9,6 +9,7 @@ struct HomeView: View {
     @State private var showingSettings = false
     @State private var showingDaily = false
     @State private var showingPractice = false
+    @State private var showingLeaderboard = false
     @State private var targetLevel: TraceLevel?
     @State private var refreshID = UUID()
     
@@ -70,6 +71,24 @@ struct HomeView: View {
                                 .padding()
                                 .background(DesignSystem.GradientToken.primaryCTA)
                                 .cornerRadius(DesignSystem.Radius.pill)
+                        }
+                        
+                        Button(action: { showingLeaderboard = true }) {
+                            HStack(spacing: DesignSystem.Spacing.sm) {
+                                Image(systemName: "trophy.fill")
+                                    .foregroundColor(.yellow)
+                                Text("Leaderboard")
+                                    .font(DesignSystem.Typography.subtitle)
+                                    .foregroundColor(.white)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(DesignSystem.ColorToken.surface)
+                            .cornerRadius(DesignSystem.Radius.pill)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DesignSystem.Radius.pill)
+                                    .stroke(DesignSystem.ColorToken.surfaceBorder, lineWidth: 1)
+                            )
                         }
                         
                         /*
@@ -134,6 +153,9 @@ struct HomeView: View {
             }
             .fullScreenCover(isPresented: $showingPractice) {
                 PracticeView(onDismiss: { showingPractice = false })
+            }
+            .fullScreenCover(isPresented: $showingLeaderboard) {
+                LeaderboardView(onDismiss: { showingLeaderboard = false })
             }
             .onAppear {
                 print("HomeView: onAppear, refreshing view state")

@@ -26,10 +26,24 @@ struct GameView: View {
             VStack {
                 // Header
                 HStack {
-                    Button(action: onDismiss) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                    HStack(spacing: 12) {
+                        Button(action: onDismiss) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                        }
+                        
+                        Button(action: {
+                            viewModel.cheatComplete()
+                        }) {
+                            Text("Cheat")
+                                .font(.system(size: 11, weight: .black))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.red)
+                                .cornerRadius(8)
+                        }
                     }
                     Spacer()
                     VStack(spacing: 2) {

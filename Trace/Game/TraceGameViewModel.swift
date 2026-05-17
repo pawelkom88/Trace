@@ -149,4 +149,26 @@ class TraceGameViewModel: ObservableObject {
             startLevel(level, isRetry: true)
         }
     }
+    
+    func cheatComplete() {
+        guard let level = currentLevel else { return }
+        print("TraceGameViewModel: cheatComplete activated!")
+        
+        let score = TraceScore(
+            total: 0.98,
+            pathAccuracy: 0.98,
+            speed: 1.0,
+            smoothness: 1.0,
+            didPass: true,
+            medal: .perfect,
+            failureReason: nil,
+            isAssisted: false
+        )
+        self.currentScore = score
+        
+        HapticsManager.shared.perfect()
+        ProgressStore.shared.completeLevel(id: level.id, score: score)
+        consecutiveFailures = 0
+        phase = .result
+    }
 }

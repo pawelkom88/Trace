@@ -15,10 +15,10 @@ struct StartEndDotView: View {
             if visibility != .hidden || isStart {
                 ZStack {
                     Circle()
-                        .fill(isStart ? DesignSystem.ColorToken.accentCyan : DesignSystem.ColorToken.accentViolet)
+                        .fill(isStart ? DesignSystem.ColorToken.accentCyan : DesignSystem.ColorToken.accentBlue)
                         .frame(width: size, height: size)
                         .shadow(
-                            color: (isStart ? DesignSystem.ColorToken.accentCyan : DesignSystem.ColorToken.accentViolet).opacity(isActive ? 0.8 : 0.4),
+                            color: (isStart ? DesignSystem.ColorToken.accentCyan : DesignSystem.ColorToken.accentBlue).opacity(isActive ? 0.8 : 0.4),
                             radius: isActive ? 12 : 6
                         )
                         .scaleEffect(isActive ? 1.2 : 1.0)

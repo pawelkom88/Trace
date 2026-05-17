@@ -107,7 +107,7 @@ struct SparklineView: View {
                 }
                 .stroke(
                     LinearGradient(
-                        colors: [DesignSystem.ColorToken.accentCyan, DesignSystem.ColorToken.accentViolet],
+                        colors: [DesignSystem.ColorToken.accentCyan, DesignSystem.ColorToken.accentBlue],
                         startPoint: .leading,
                         endPoint: .trailing
                     ),

@@ -22,6 +22,7 @@
 		8C04953C15D06D59ABD84DEC /* DotGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E972D3F45B6E42FD34B01322 /* DotGridView.swift */; };
 		8E6AAED5BA9B2755E462F79F /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFC246C1735F7E0703E83A0 /* DesignSystem.swift */; };
 		910DFA8AB1D75BB636938D49 /* TraceGameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A67C99B76BC1733138F7DF /* TraceGameViewModel.swift */; };
+		B9B967C00C3A3DE73805F469 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ECC362BD2360CE51F4274F9 /* LeaderboardView.swift */; };
 		C0A84FDAD94F25A4F0C174C4 /* ProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48357A1EB291DBDFC3AF0D84 /* ProgressStore.swift */; };
 		CF8488C787257B740364754B /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B1BBB37204B1384E3EBC66 /* ResultView.swift */; };
 		D641752E254FABFC354FF58A /* TraceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA72FCFCABEE4D33A551770 /* TraceApp.swift */; };
@@ -42,6 +43,7 @@
 		77C8D15B29F71CA6F4D71235 /* PathScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathScoringEngine.swift; sourceTree = "<group>"; };
 		7906801E678BA53085F54A59 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		7D4A9E8B8874991FDAD13763 /* Trace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7ECC362BD2360CE51F4274F9 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		8BA72FCFCABEE4D33A551770 /* TraceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceApp.swift; sourceTree = "<group>"; };
 		8CCB06BBEF2C8C3C17CBF4F5 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		9FCBBD7685606E0B7F3CF2E1 /* GestureCanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureCanvasView.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				BA11388877B42D00F201E522 /* DailyChallengeView.swift */,
 				41540D8C57166F122857B6D0 /* GameView.swift */,
 				421F3893294FBE6C5120A000 /* HomeView.swift */,
+				7ECC362BD2360CE51F4274F9 /* LeaderboardView.swift */,
 				8CCB06BBEF2C8C3C17CBF4F5 /* PaywallView.swift */,
 				422EAF66422CC143A73F3CB5 /* PracticeView.swift */,
 				E8B1BBB37204B1384E3EBC66 /* ResultView.swift */,
@@ -210,6 +213,7 @@
 				777C41F484955C1DD0B562BD /* GlowingPathView.swift in Sources */,
 				6C8830F1554005B12999C0C7 /* HapticsManager.swift in Sources */,
 				60048638856C993AB99281D4 /* HomeView.swift in Sources */,
+				B9B967C00C3A3DE73805F469 /* LeaderboardView.swift in Sources */,
 				3659D3C93504D52FD4405504 /* LevelRepository.swift in Sources */,
 				143B485C800C3F6E94B83150 /* Models.swift in Sources */,
 				DE7FB39B444770A968F1DBEC /* PathScoringEngine.swift in Sources */,
