@@ -3,10 +3,15 @@ import SwiftUI
 struct GameView: View {
     @StateObject private var viewModel = TraceGameViewModel()
     @AppStorage("GridAssistEnabled") private var isGridEnabled = false
+    @State private var showGemShop = false
+    @State private var selectedLifelineForModal: LifelineType? = nil
     
     @State private var currentLevel: TraceLevel
     @State private var showTierAscension = false
     @State private var previousDifficultyTitle = ""
+    @State private var showVictory = false
+    @State private var timerScale: CGFloat = 1.0
+    @State private var timerHighlight = false
     var autoAdvance: Bool = false
     var onScoreReported: ((TraceScore) -> Void)?
     var onDismiss: () -> Void
@@ -26,36 +31,31 @@ struct GameView: View {
             VStack {
                 // Header
                 HStack {
-                    HStack(spacing: 12) {
-                        Button(action: onDismiss) {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(DesignSystem.ColorToken.textSecondary)
-                        }
-                        
-                        Button(action: {
-                            viewModel.cheatComplete()
-                        }) {
-                            Text("Cheat")
-                                .font(.system(size: 11, weight: .black))
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color.red)
-                                .cornerRadius(8)
-                        }
+                    // Left action: Close
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(DesignSystem.ColorToken.textSecondary)
                     }
+                    
                     Spacer()
+                    
+                    // Center: Level & Target Stats
                     VStack(spacing: 2) {
                         Text("Level \(currentLevel.id)")
                             .font(DesignSystem.Typography.subtitle)
                             .foregroundColor(DesignSystem.ColorToken.textPrimary)
                             .id("level-title-\(currentLevel.id)") // Force refresh for animation if needed
+                            .onLongPressGesture {
+                                viewModel.cheatComplete()
+                            }
                         
                         HStack(spacing: DesignSystem.Spacing.md) {
                             HStack(spacing: 4) {
                                 Image(systemName: "timer")
-                                Text(String(format: "%.1fs", currentLevel.maxTraceDuration))
+                                Text(String(format: "%.1fs", viewModel.timerBoostDisplayValue > 0 ? viewModel.timerBoostDisplayValue : currentLevel.maxTraceDuration))
+                                    .scaleEffect(timerScale)
+                                    .foregroundColor(timerHighlight ? DesignSystem.ColorToken.accentCyan : DesignSystem.ColorToken.textSecondary)
                             }
                             HStack(spacing: 4) {
                                 Image(systemName: "target")
@@ -77,12 +77,26 @@ struct GameView: View {
                                 .transition(.scale.combined(with: .opacity))
                         }
                     }
+                    
                     Spacer()
                     
+                    // Right action: Gems & Grid Toggle
                     HStack(spacing: DesignSystem.Spacing.md) {
-                        Text("Streak: \(ProgressStore.shared.progress.currentStreak)")
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                        Button(action: {
+                            showGemShop = true
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "diamond.fill")
+                                    .foregroundColor(DesignSystem.ColorToken.gemPrimary)
+                                Text("\(ProgressStore.shared.progress.gems ?? 100)")
+                                    .font(DesignSystem.Typography.subtitle)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(DesignSystem.ColorToken.surface)
+                            .cornerRadius(DesignSystem.Radius.small)
+                        }
                         
                         Button(action: {
                             withAnimation(.easeInOut(duration: DesignSystem.AnimationDuration.quick)) {
@@ -95,19 +109,36 @@ struct GameView: View {
                         }
                     }
                 }
-                .padding()
+                .padding(.horizontal)
+                .padding(.top, DesignSystem.Spacing.sm)
+                .padding(.bottom, DesignSystem.Spacing.xs)
                 
                 // Instructions
-                Text(instructionText)
+                Text(instructionText.isEmpty ? " " : instructionText)
                     .font(DesignSystem.Typography.title)
                     .foregroundColor(DesignSystem.ColorToken.textPrimary)
-                    .padding(.top, DesignSystem.Spacing.lg)
+                    .padding(.top, DesignSystem.Spacing.xs)
+                    .opacity(instructionText.isEmpty ? 0.0 : 1.0)
                 
                 // Canvas area
                 GestureCanvasView(viewModel: viewModel, level: currentLevel)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(DesignSystem.Spacing.md)
+                    .padding(.horizontal, DesignSystem.Spacing.md)
+                    .padding(.vertical, DesignSystem.Spacing.sm)
                     .id("canvas-\(currentLevel.id)") // Clean animation transition
+                
+                LifelineBarView(
+                    viewModel: viewModel,
+                    onLifelineSelected: { lifeline in
+                        selectedLifelineForModal = lifeline
+                    },
+                    onInsufficientGems: {
+                        showGemShop = true
+                    }
+                )
+                .opacity((viewModel.phase == .waitingForStart || viewModel.phase == .tracing) ? 1.0 : 0.0)
+                .disabled(!(viewModel.phase == .waitingForStart || viewModel.phase == .tracing))
+                .animation(.easeInOut(duration: 0.25), value: viewModel.phase)
             }
             
             if showTierAscension {
@@ -119,7 +150,9 @@ struct GameView: View {
                 .zIndex(100)
             }
             
-            if viewModel.phase == .result || viewModel.phase == .failed {
+            if showVictory {
+                VictoryView(onDismiss: onDismiss)
+            } else if viewModel.phase == .result || viewModel.phase == .failed {
                 ResultView(
                     score: viewModel.currentScore,
                     viewModel: viewModel,
@@ -136,10 +169,57 @@ struct GameView: View {
                     }
                 )
             }
+            
+            if let lifeline = selectedLifelineForModal {
+                LifelineExplainerModal(
+                    lifeline: lifeline,
+                    gems: ProgressStore.shared.progress.gems ?? 100,
+                    onUse: {
+                        if ProgressStore.shared.spendGems(lifeline.gemCost) {
+                            switch lifeline {
+                            case .wormhole:
+                                viewModel.activateWormhole()
+                            case .zenFreeze:
+                                viewModel.activateZenFreeze()
+                            case .phantomGlimpse:
+                                viewModel.activatePhantomGlimpse()
+                            }
+                        }
+                    },
+                    onCancel: {
+                        selectedLifelineForModal = nil
+                    },
+                    onBuyGems: {
+                        showGemShop = true
+                    }
+                )
+                .transition(.opacity)
+                .zIndex(150)
+            }
         }
         .onAppear {
             print("GameView: onAppear for level \(currentLevel.id)")
             viewModel.startLevel(currentLevel)
+        }
+        .onChange(of: showTierAscension) { _, visible in
+            if !visible && viewModel.phase == .preparingLevel {
+                viewModel.startLevel(currentLevel)
+            }
+        }
+        .onChange(of: viewModel.timerBoostPulseToken) { _, _ in
+            withAnimation(.spring(response: 0.22, dampingFraction: 0.45)) {
+                timerScale = 1.25
+                timerHighlight = true
+            }
+            withAnimation(.easeOut(duration: 0.35).delay(0.15)) {
+                timerScale = 1.0
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+                timerHighlight = false
+            }
+        }
+        .sheet(isPresented: $showGemShop) {
+            GemShopView()
         }
     }
     
@@ -165,7 +245,6 @@ struct GameView: View {
                     self.showTierAscension = true
                     self.currentLevel = nextLevel
                 }
-                viewModel.startLevel(nextLevel)
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     withAnimation {
@@ -179,8 +258,9 @@ struct GameView: View {
                 viewModel.startLevel(nextLevel)
             }
         } else {
-            print("GameView: No more levels left. Dismissing.")
-            onDismiss()
+            print("GameView: Final level completed. Showing victory.")
+            _ = ProgressStore.shared.claimFinalRewardIfNeeded()
+            showVictory = true
         }
     }
     
@@ -188,7 +268,7 @@ struct GameView: View {
         switch viewModel.phase {
         case .idle, .preparingLevel: return "Get Ready"
         case .tutorial, .previewStatic, .previewAnimating: return "Watch the pattern"
-        case .waitingForStart: return "Start here"
+        case .waitingForStart: return ""
         case .tracing: return "Trace without lifting"
         case .evaluating: return "Evaluating..."
         case .result, .failed, .paywall: return ""

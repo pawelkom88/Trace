@@ -1,0 +1,137 @@
+{
+  "identifier" : "E2B7AA29",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayVersion" : "1.0",
+      "familyShareable" : false,
+      "internalID" : "33A7C75E",
+      "localizations" : [
+        {
+          "description" : "Unlock all levels",
+          "displayName" : "Full Game Unlock",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "trace.full.unlock",
+      "referenceName" : "Full Game Unlock",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayVersion" : "1.0",
+      "familyShareable" : false,
+      "internalID" : "E3F8A6B2",
+      "localizations" : [
+        {
+          "description" : "50 Gems for tracing lifelines",
+          "displayName" : "Shard of Gems",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "trace.gems.50",
+      "referenceName" : "Shard of Gems",
+      "type" : "Consumable"
+    },
+    {
+      "displayVersion" : "1.0",
+      "familyShareable" : false,
+      "internalID" : "A2B9C8E7",
+      "localizations" : [
+        {
+          "description" : "180 Gems with +20% bonus!",
+          "displayName" : "Cluster of Gems",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "trace.gems.180",
+      "referenceName" : "Cluster of Gems",
+      "type" : "Consumable"
+    },
+    {
+      "displayVersion" : "1.0",
+      "familyShareable" : false,
+      "internalID" : "C7E9D2F4",
+      "localizations" : [
+        {
+          "description" : "350 Gems with +40% bonus!",
+          "displayName" : "Geode of Gems",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "trace.gems.350",
+      "referenceName" : "Geode of Gems",
+      "type" : "Consumable"
+    },
+    {
+      "displayVersion" : "1.0",
+      "familyShareable" : false,
+      "internalID" : "E1F3B6A8",
+      "localizations" : [
+        {
+          "description" : "800 Gems with +60% bonus!",
+          "displayName" : "Supernova Vault",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "trace.gems.800",
+      "referenceName" : "Supernova Vault",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

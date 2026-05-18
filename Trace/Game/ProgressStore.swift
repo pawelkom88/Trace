@@ -7,11 +7,19 @@ class ProgressStore: ObservableObject {
     
     private let defaults = UserDefaults.standard
     private let key = "TraceProgress"
+    private let maxLevel = 50
     
     init() {
         if let data = defaults.data(forKey: key),
            var decoded = try? JSONDecoder().decode(TraceProgress.self, from: data) {
             decoded.hasFullUnlock = true
+            if decoded.gems == nil {
+                decoded.gems = 100
+            }
+            if decoded.hasClaimedFinalReward == nil {
+                decoded.hasClaimedFinalReward = false
+            }
+            decoded.highestUnlockedLevel = min(decoded.highestUnlockedLevel, maxLevel)
             self.progress = decoded
         } else {
             self.progress = TraceProgress(
@@ -25,7 +33,9 @@ class ProgressStore: ObservableObject {
                 hasFullUnlock: true,
                 dailyStreak: 0,
                 lastDailyCompletionDate: nil,
-                dailyScoresByDate: [:]
+                dailyScoresByDate: [:],
+                gems: 100,
+                hasClaimedFinalReward: false
             )
         }
     }
@@ -67,7 +77,7 @@ class ProgressStore: ObservableObject {
         }
         
         if id == progress.highestUnlockedLevel {
-            progress.highestUnlockedLevel += 1
+            progress.highestUnlockedLevel = min(progress.highestUnlockedLevel + 1, maxLevel)
         }
         
         progress.currentStreak += 1
@@ -107,8 +117,36 @@ class ProgressStore: ObservableObject {
             hasFullUnlock: true,
             dailyStreak: 0,
             lastDailyCompletionDate: nil,
-            dailyScoresByDate: [:]
+            dailyScoresByDate: [:],
+            gems: 100,
+            hasClaimedFinalReward: false
         )
         save()
+    }
+    
+    func spendGems(_ amount: Int) -> Bool {
+        let current = progress.gems ?? 100
+        if current >= amount {
+            progress.gems = current - amount
+            save()
+            return true
+        }
+        return false
+    }
+    
+    func addGems(_ amount: Int) {
+        let current = progress.gems ?? 100
+        progress.gems = current + amount
+        save()
+    }
+    
+    func claimFinalRewardIfNeeded() -> Bool {
+        if progress.hasClaimedFinalReward == true {
+            return false
+        }
+        addGems(200)
+        progress.hasClaimedFinalReward = true
+        save()
+        return true
     }
 }

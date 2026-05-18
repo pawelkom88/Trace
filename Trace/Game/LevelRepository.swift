@@ -21,21 +21,18 @@ struct LevelRepository {
             let tolerance: Double
             let endZone: EndZoneVisibility
             
+            maxTrace = 3.5
             switch diff {
             case .easy:
-                maxTrace = 5.0
                 tolerance = 44.0
                 endZone = .visible
             case .normal:
-                maxTrace = 3.5
                 tolerance = 32.0
                 endZone = .faint
             case .hard:
-                maxTrace = 2.5
                 tolerance = 22.0
                 endZone = .hidden
             case .expert:
-                maxTrace = 1.5
                 tolerance = 14.0
                 endZone = .hidden
             }

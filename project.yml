@@ -20,3 +20,16 @@ targets:
       INFOPLIST_KEY_UISupportedInterfaceOrientations~ipad: UIInterfaceOrientationPortrait
       PRODUCT_BUNDLE_IDENTIFIER: com.example.Trace
       SWIFT_VERSION: 5.0
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+schemes:
+  Trace:
+    build:
+      targets:
+        Trace: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    archive:
+      config: Release

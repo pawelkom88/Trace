@@ -10,6 +10,10 @@ class TraceGameViewModel: ObservableObject {
     @Published var previewProgress: CGFloat = 0.0
     @Published var consecutiveFailures = 0
     @Published var isAssistModeActive = false
+    @Published var showPhantomGlimpse = false
+    @Published var timeDilationFactor: Double = 1.0
+    @Published var timerBoostPulseToken = UUID()
+    @Published var timerBoostDisplayValue: Double = 0.0
     
     private var startTime: Date?
     private var screenSize: CGSize = .zero
@@ -22,11 +26,13 @@ class TraceGameViewModel: ObservableObject {
             self.consecutiveFailures = 0
             self.isAssistModeActive = false
         }
+        self.timeDilationFactor = 1.0
         
         self.currentLevel = level
         self.userPoints = []
         self.currentScore = nil
         self.previewProgress = 0.0
+        self.timerBoostDisplayValue = level.maxTraceDuration * timeDilationFactor
         
         let previewOnEveryTry = UserDefaults.standard.object(forKey: "PreviewOnEveryTry") as? Bool ?? true
         
@@ -49,6 +55,7 @@ class TraceGameViewModel: ObservableObject {
         print("TraceGameViewModel: runPreviewSequence")
         self.phase = .previewStatic
         HapticsManager.shared.softTick()
+        SoundManager.shared.softTick()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             print("TraceGameViewModel: phase previewAnimating")
@@ -61,6 +68,7 @@ class TraceGameViewModel: ObservableObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + level.previewDuration + 0.3) {
                 print("TraceGameViewModel: phase waitingForStart")
                 HapticsManager.shared.softTick()
+                SoundManager.shared.softTick()
                 self.phase = .waitingForStart
             }
         }
@@ -85,9 +93,11 @@ class TraceGameViewModel: ObservableObject {
                 startTime = Date()
                 userPoints.append(point)
                 HapticsManager.shared.softTick()
+                SoundManager.shared.softTick()
             } else {
                 print("TraceGameViewModel: User missed start zone. Distance: \(d)")
                 HapticsManager.shared.warning()
+                SoundManager.shared.warning()
                 // Do not start
             }
         } else if phase == .tracing {
@@ -122,21 +132,24 @@ class TraceGameViewModel: ObservableObject {
             didLiftEarly: liftedEarly
         )
         
-        let score = PathScoringEngine.evaluate(attempt: attempt, level: level, screenSize: screenSize, isAssistActive: isAssistModeActive)
+        let score = PathScoringEngine.evaluate(attempt: attempt, level: level, screenSize: screenSize, isAssistActive: isAssistModeActive, timeDilationFactor: timeDilationFactor)
         self.currentScore = score
         
         print("TraceGameViewModel: Evaluation done. didPass: \(score.didPass), total: \(score.total), assisted: \(score.isAssisted)")
         if score.didPass {
             if score.medal == .perfect {
                 HapticsManager.shared.perfect()
+                SoundManager.shared.perfect()
             } else {
                 HapticsManager.shared.success()
+                SoundManager.shared.success()
             }
             ProgressStore.shared.completeLevel(id: level.id, score: score)
             consecutiveFailures = 0 // Reset failures on successful completion
             phase = .result
         } else {
             HapticsManager.shared.fail()
+            SoundManager.shared.fail()
             ProgressStore.shared.failAttempt(id: level.id, score: score)
             consecutiveFailures += 1 // Increment failures
             print("TraceGameViewModel: Failure incremented. Consecutive Failures: \(consecutiveFailures)")
@@ -167,8 +180,60 @@ class TraceGameViewModel: ObservableObject {
         self.currentScore = score
         
         HapticsManager.shared.perfect()
+        SoundManager.shared.perfect()
         ProgressStore.shared.completeLevel(id: level.id, score: score)
         consecutiveFailures = 0
         phase = .result
+    }
+    
+    // MARK: - Lifelines
+    
+    func activateWormhole() {
+        guard let level = currentLevel else { return }
+        print("TraceGameViewModel: Lifeline Wormhole activated!")
+        
+        let score = TraceScore(
+            total: level.passThreshold + 0.01,
+            pathAccuracy: level.passThreshold + 0.01,
+            speed: 0.5,
+            smoothness: 0.5,
+            didPass: true,
+            medal: .pass,
+            failureReason: nil,
+            isAssisted: true
+        )
+        self.currentScore = score
+        HapticsManager.shared.perfect()
+        SoundManager.shared.playWormhole()
+        ProgressStore.shared.completeLevel(id: level.id, score: score)
+        consecutiveFailures = 0
+        phase = .result
+    }
+    
+    func activateZenFreeze() {
+        guard let level = currentLevel else { return }
+        print("TraceGameViewModel: Lifeline Zen Freeze activated!")
+        HapticsManager.shared.softTick()
+        SoundManager.shared.playZenFreeze()
+        withAnimation {
+            timeDilationFactor = 0.5 // Effectively doubles remaining time if implemented in evaluation
+        }
+        timerBoostDisplayValue = level.maxTraceDuration / timeDilationFactor
+        timerBoostPulseToken = UUID()
+    }
+    
+    func activatePhantomGlimpse() {
+        print("TraceGameViewModel: Lifeline Phantom Glimpse activated!")
+        HapticsManager.shared.softTick()
+        SoundManager.shared.playPhantomGlimpse()
+        withAnimation {
+            showPhantomGlimpse = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            withAnimation {
+                self.showPhantomGlimpse = false
+            }
+        }
     }
 }

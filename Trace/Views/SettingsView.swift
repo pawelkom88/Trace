@@ -95,6 +95,9 @@ struct SettingsView: View {
             .onChange(of: hapticsEnabled) { oldValue, newValue in
                 HapticsManager.shared.isEnabled = newValue
             }
+            .onChange(of: soundEnabled) { oldValue, newValue in
+                SoundManager.shared.isEnabled = newValue
+            }
             .alert("StoreKit Status", isPresented: Binding(
                 get: { purchaseManager.lastErrorMessage != nil },
                 set: { if !$0 { purchaseManager.lastErrorMessage = nil } }

@@ -16,11 +16,24 @@ enum DesignSystem {
         static let success = Color.green
         static let warning = Color.yellow
         static let danger = Color.red
+        
+        static let gemPrimary = Color(red: 1.0, green: 0.2, blue: 0.6) // Hot pink / Magenta
+        static let gemSecondary = Color(red: 1.0, green: 0.6, blue: 0.8)
+        
+        static let lifelineWormhole = Color(red: 0.6, green: 0.2, blue: 1.0) // Deep purple
+        static let lifelineZen = Color(red: 0.2, green: 0.8, blue: 1.0) // Ice blue
+        static let lifelinePhantom = Color(red: 0.2, green: 1.0, blue: 0.6) // Ghost green
     }
     
     enum GradientToken {
         static let primaryCTA = LinearGradient(
             colors: [ColorToken.accentCyan, ColorToken.accentBlue],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        
+        static let gemGradient = LinearGradient(
+            colors: [ColorToken.gemSecondary, ColorToken.gemPrimary],
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )

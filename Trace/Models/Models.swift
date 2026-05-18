@@ -65,6 +65,36 @@ enum TraceFailureReason: String, Codable {
     case outsideToleranceTooLong
 }
 
+enum LifelineType: String, Codable, CaseIterable {
+    case wormhole
+    case zenFreeze
+    case phantomGlimpse
+    
+    var name: String {
+        switch self {
+        case .wormhole: return "Wormhole"
+        case .zenFreeze: return "Zen Freeze"
+        case .phantomGlimpse: return "Phantom"
+        }
+    }
+    
+    var iconSystemName: String {
+        switch self {
+        case .wormhole: return "aqi.medium"
+        case .zenFreeze: return "snowflake"
+        case .phantomGlimpse: return "eye"
+        }
+    }
+    
+    var gemCost: Int {
+        switch self {
+        case .wormhole: return 20
+        case .zenFreeze: return 8
+        case .phantomGlimpse: return 14
+        }
+    }
+}
+
 struct TraceScore {
     let total: Double
     let pathAccuracy: Double
@@ -101,6 +131,8 @@ struct TraceProgress: Codable {
     var lastDailyCompletionDate: String?
     var dailyScoresByDate: [String: Double]
     var attemptHistoryByLevel: [Int: [TraceAttemptHistoryItem]]?
+    var gems: Int?
+    var hasClaimedFinalReward: Bool?
     
     var globalPrestigeScore: Int {
         let sum = bestScoresByLevel.values.reduce(0, +)

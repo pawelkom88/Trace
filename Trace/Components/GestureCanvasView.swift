@@ -15,14 +15,14 @@ struct GestureCanvasView: View {
                         .transition(.opacity)
                 }
                 
-                // Target path (faint if preview done, fully visible during preview)
-                if viewModel.phase == .previewStatic || viewModel.phase == .previewAnimating {
+                // Target path (faint if preview done, fully visible during preview, or visible via Phantom Glimpse)
+                if viewModel.phase == .previewStatic || viewModel.phase == .previewAnimating || viewModel.showPhantomGlimpse {
                     GlowingPathView(
                         points: level.pattern.points,
                         isLive: false,
-                        color: DesignSystem.ColorToken.accentBlue.opacity(0.3),
-                        glowColor: DesignSystem.ColorToken.accentBlue.opacity(0.1),
-                        progress: viewModel.phase == .previewAnimating ? viewModel.previewProgress : 0.0
+                        color: viewModel.showPhantomGlimpse ? DesignSystem.ColorToken.lifelinePhantom.opacity(0.4) : DesignSystem.ColorToken.accentBlue.opacity(0.3),
+                        glowColor: viewModel.showPhantomGlimpse ? DesignSystem.ColorToken.lifelinePhantom.opacity(0.2) : DesignSystem.ColorToken.accentBlue.opacity(0.1),
+                        progress: viewModel.phase == .previewAnimating ? viewModel.previewProgress : 1.0
                     )
                 }
                 
@@ -55,6 +55,12 @@ struct GestureCanvasView: View {
                         visibility: viewModel.phase == .tracing ? level.endZoneVisibility : .hidden
                     )
                 }
+                
+                // Frosted Ice border overlay when Zen Freeze is active!
+                if viewModel.timeDilationFactor < 1.0 {
+                    ZenFreezeOverlay()
+                        .transition(.opacity)
+                }
             }
             .contentShape(Rectangle())
             .gesture(
@@ -76,6 +82,32 @@ struct GestureCanvasView: View {
             .onAppear {
                 viewModel.setScreenSize(geometry.size)
             }
+            .onChange(of: geometry.size) { oldValue, newValue in
+                viewModel.setScreenSize(newValue)
+            }
         }
+    }
+}
+
+struct ZenFreezeOverlay: View {
+    @State private var isAnimating = false
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: DesignSystem.Radius.medium)
+            .stroke(
+                LinearGradient(
+                    colors: [.cyan, .blue.opacity(0.6)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                lineWidth: 3
+            )
+            .shadow(color: .cyan.opacity(isAnimating ? 0.8 : 0.3), radius: isAnimating ? 15 : 6)
+            .opacity(isAnimating ? 0.9 : 0.5)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                    isAnimating = true
+                }
+            }
     }
 }

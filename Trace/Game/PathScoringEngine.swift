@@ -3,12 +3,13 @@ import CoreGraphics
 
 struct PathScoringEngine {
     
-    static func evaluate(attempt: TraceAttempt, level: TraceLevel, screenSize: CGSize, isAssistActive: Bool = false) -> TraceScore {
+    static func evaluate(attempt: TraceAttempt, level: TraceLevel, screenSize: CGSize, isAssistActive: Bool = false, timeDilationFactor: Double = 1.0) -> TraceScore {
         let userPoints = attempt.userPoints
         let targetPoints = level.pattern.points
         
         // Timeout check
-        let duration = (attempt.endedAt ?? Date()).timeIntervalSince(attempt.startedAt)
+        let realDuration = (attempt.endedAt ?? Date()).timeIntervalSince(attempt.startedAt)
+        let duration = realDuration * timeDilationFactor
         if duration > level.maxTraceDuration {
             return failScore(reason: .timedOut, level: level)
         }
@@ -94,7 +95,8 @@ struct PathScoringEngine {
         // Weighted Total
         var total = (pathAccuracy * 0.7) + (speedScore * 0.2) + (smoothnessScore * 0.1)
         
-        let didPass = total >= level.passThreshold
+        let epsilon = 0.000_000_1
+        let didPass = total + epsilon >= level.passThreshold
         var medal: TraceMedal
         
         if isAssistActive {
