@@ -10,7 +10,8 @@ class ProgressStore: ObservableObject {
     
     init() {
         if let data = defaults.data(forKey: key),
-           let decoded = try? JSONDecoder().decode(TraceProgress.self, from: data) {
+           var decoded = try? JSONDecoder().decode(TraceProgress.self, from: data) {
+            decoded.hasFullUnlock = true
             self.progress = decoded
         } else {
             self.progress = TraceProgress(
@@ -21,7 +22,7 @@ class ProgressStore: ObservableObject {
                 currentStreak: 0,
                 bestStreak: 0,
                 hasCompletedTutorial: false,
-                hasFullUnlock: false,
+                hasFullUnlock: true,
                 dailyStreak: 0,
                 lastDailyCompletionDate: nil,
                 dailyScoresByDate: [:]
@@ -95,7 +96,6 @@ class ProgressStore: ObservableObject {
     }
     
     func resetProgress() {
-        let hasUnlock = progress.hasFullUnlock
         progress = TraceProgress(
             highestUnlockedLevel: 1,
             completedLevelIDs: [],
@@ -104,7 +104,7 @@ class ProgressStore: ObservableObject {
             currentStreak: 0,
             bestStreak: 0,
             hasCompletedTutorial: false,
-            hasFullUnlock: hasUnlock,
+            hasFullUnlock: true,
             dailyStreak: 0,
             lastDailyCompletionDate: nil,
             dailyScoresByDate: [:]

@@ -16,7 +16,7 @@ class PurchaseManager: ObservableObject {
     private var isInitialized = false
     
     init() {
-        self.isPurchased = ProgressStore.shared.progress.hasFullUnlock
+        self.isPurchased = true
     }
     
     func initialize() {
@@ -117,18 +117,7 @@ class PurchaseManager: ObservableObject {
     }
     
     private func updatePurchasedState() async {
-        var hasUnlock = false
-        for await result in Transaction.currentEntitlements {
-            if case .verified(let transaction) = result {
-                if transaction.productID == productID {
-                    hasUnlock = true
-                }
-            }
-        }
-        
-        self.isPurchased = hasUnlock
-        if hasUnlock {
-            ProgressStore.shared.unlockFullGame()
-        }
+        self.isPurchased = true
+        ProgressStore.shared.unlockFullGame()
     }
 }
