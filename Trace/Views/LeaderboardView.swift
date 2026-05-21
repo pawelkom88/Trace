@@ -175,9 +175,15 @@ struct LeaderboardView: View {
                 })
             }
             .fullScreenCover(item: $activeGameLevel) { level in
-                GameView(level: level, onDismiss: {
-                    activeGameLevel = nil
-                })
+                GameView(
+                    level: Binding(
+                        get: { activeGameLevel ?? level },
+                        set: { activeGameLevel = $0 }
+                    ),
+                    onDismiss: {
+                        activeGameLevel = nil
+                    }
+                )
             }
         }
     }

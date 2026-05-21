@@ -5,6 +5,7 @@ struct ResultView: View {
     let viewModel: TraceGameViewModel
     let level: TraceLevel
     var onDismiss: () -> Void
+    var onNext: () -> Void
     
     var body: some View {
         ZStack {
@@ -150,7 +151,7 @@ struct ResultView: View {
                     
                     // Action Buttons
                     VStack(spacing: 12) {
-                        Button(action: onDismiss) {
+                        Button(action: onNext) {
                             Text("Next Level")
                                 .font(.system(size: 18, weight: .bold))
                                 .foregroundColor(.black)
@@ -292,21 +293,30 @@ struct ResultView: View {
                             
                             Button(action: {
                                 withAnimation {
-                                    viewModel.isAssistModeActive = true
+                                    viewModel.isAssistModeActive.toggle()
                                     viewModel.retry()
                                 }
                             }) {
-                                Text(viewModel.isAssistModeActive ? "Zen Assist Active" : "Activate Zen Assist")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 14)
-                                    .background(Color.clear)
-                                    .cornerRadius(12)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color.white.opacity(0.3), lineWidth: 1.5)
-                                    )
+                                HStack(spacing: 8) {
+                                    Image(systemName: viewModel.isAssistModeActive ? "leaf.fill" : "leaf")
+                                        .font(.system(size: 16, weight: .bold))
+                                    Text(viewModel.isAssistModeActive ? "Zen Assist Active" : "Activate Zen Assist")
+                                        .font(.system(size: 16, weight: .bold))
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(viewModel.isAssistModeActive ? DesignSystem.ColorToken.accentCyan : Color.black.opacity(0.3))
+                                .foregroundColor(viewModel.isAssistModeActive ? .black : DesignSystem.ColorToken.accentCyan)
+                                .clipShape(Capsule())
+                                .overlay(
+                                    Group {
+                                        if !viewModel.isAssistModeActive {
+                                            Capsule()
+                                                .stroke(DesignSystem.ColorToken.accentCyan, lineWidth: 1.5)
+                                        }
+                                    }
+                                )
+                                .shadow(color: viewModel.isAssistModeActive ? DesignSystem.ColorToken.accentCyan.opacity(0.5) : Color.clear, radius: 8, x: 0, y: 0)
                             }
                             .padding(.top, 4)
                         }

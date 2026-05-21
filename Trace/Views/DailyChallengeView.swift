@@ -41,7 +41,7 @@ struct DailyChallengeView: View {
             }
         }
         .fullScreenCover(isPresented: $showingGame) {
-            GameView(level: levels[currentLevelIndex], onScoreReported: { score in
+            GameView(level: $levels[currentLevelIndex], onScoreReported: { score in
                 scores.append(score)
             }, onDismiss: {
                 showingGame = false
@@ -99,7 +99,7 @@ struct DailyResultView: View {
     
     private func shareResult() {
         let avgAccuracy = scores.isEmpty ? 0.0 : scores.reduce(0) { $0 + $1.pathAccuracy } / Double(scores.count)
-        let text = "Trace - Daily Challenge\n\(Int(avgAccuracy * 100))% Accuracy\nWatch it. Trace it. Don’t lift."
+        let text = "PathMinder - Daily Challenge\n\(Int(avgAccuracy * 100))% Accuracy\nWatch it. Follow it. Don’t lift."
         let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

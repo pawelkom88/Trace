@@ -61,6 +61,12 @@ struct GestureCanvasView: View {
                     ZenFreezeOverlay()
                         .transition(.opacity)
                 }
+                
+                // Pulsing dashed cyan border overlay when Zen Mode (Assist) is active!
+                if viewModel.isAssistModeActive {
+                    ZenAssistOverlay()
+                        .transition(.opacity)
+                }
             }
             .contentShape(Rectangle())
             .gesture(
@@ -107,6 +113,25 @@ struct ZenFreezeOverlay: View {
             .onAppear {
                 withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
                     isAnimating = true
+                }
+            }
+    }
+}
+
+struct ZenAssistOverlay: View {
+    @State private var pulseIntensity = 0.4
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: DesignSystem.Radius.medium)
+            .strokeBorder(
+                DesignSystem.ColorToken.accentCyan,
+                style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round, dash: [8, 6])
+            )
+            .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(pulseIntensity), radius: pulseIntensity * 10, x: 0, y: 0)
+            .opacity(pulseIntensity + 0.3)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                    pulseIntensity = 0.8
                 }
             }
     }

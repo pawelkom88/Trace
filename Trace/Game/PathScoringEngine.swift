@@ -96,7 +96,7 @@ struct PathScoringEngine {
         var total = (pathAccuracy * 0.7) + (speedScore * 0.2) + (smoothnessScore * 0.1)
         
         let epsilon = 0.000_000_1
-        let didPass = total + epsilon >= level.passThreshold
+        let didPass = pathAccuracy + epsilon >= level.passThreshold
         var medal: TraceMedal
         
         if isAssistActive {
@@ -104,11 +104,11 @@ struct PathScoringEngine {
             total = total * 0.5
             medal = didPass ? .pass : .none
         } else {
-            if total >= level.perfectThreshold {
+            if pathAccuracy + epsilon >= level.perfectThreshold {
                 medal = .perfect
-            } else if total >= level.greatThreshold {
+            } else if pathAccuracy + epsilon >= level.greatThreshold {
                 medal = .great
-            } else if total >= level.passThreshold {
+            } else if pathAccuracy + epsilon >= level.passThreshold {
                 medal = .pass
             } else {
                 medal = .none

@@ -6,7 +6,7 @@ struct GameView: View {
     @State private var showGemShop = false
     @State private var selectedLifelineForModal: LifelineType? = nil
     
-    @State private var currentLevel: TraceLevel
+    @Binding private var currentLevel: TraceLevel
     @State private var showTierAscension = false
     @State private var previousDifficultyTitle = ""
     @State private var showVictory = false
@@ -16,8 +16,8 @@ struct GameView: View {
     var onScoreReported: ((TraceScore) -> Void)?
     var onDismiss: () -> Void
     
-    init(level: TraceLevel, autoAdvance: Bool = false, onScoreReported: ((TraceScore) -> Void)? = nil, onDismiss: @escaping () -> Void) {
-        self._currentLevel = State(initialValue: level)
+    init(level: Binding<TraceLevel>, autoAdvance: Bool = false, onScoreReported: ((TraceScore) -> Void)? = nil, onDismiss: @escaping () -> Void) {
+        self._currentLevel = level
         self.autoAdvance = autoAdvance
         self.onScoreReported = onScoreReported
         self.onDismiss = onDismiss
@@ -66,15 +66,33 @@ struct GameView: View {
                         .foregroundColor(DesignSystem.ColorToken.textSecondary)
                         .padding(.top, 2)
                         
-                        if viewModel.isAssistModeActive {
-                            Text("Zen Assist Active")
-                                .font(DesignSystem.Typography.caption)
-                                .foregroundColor(DesignSystem.ColorToken.accentCyan)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(DesignSystem.ColorToken.accentCyan.opacity(0.15))
-                                .cornerRadius(4)
-                                .transition(.scale.combined(with: .opacity))
+                        if viewModel.consecutiveFailures >= 5 || viewModel.isAssistModeActive {
+                            Button(action: {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    viewModel.isAssistModeActive.toggle()
+                                    viewModel.retry()
+                                }
+                            }) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: viewModel.isAssistModeActive ? "leaf.fill" : "leaf")
+                                        .font(.system(size: 10, weight: .bold))
+                                    Text(viewModel.isAssistModeActive ? "ZEN MODE ON" : "ZEN MODE OFF")
+                                        .font(.system(size: 10, weight: .bold))
+                                        .tracking(0.5)
+                                }
+                                .foregroundColor(viewModel.isAssistModeActive ? .black : DesignSystem.ColorToken.accentCyan)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(viewModel.isAssistModeActive ? DesignSystem.ColorToken.accentCyan : Color.clear)
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(DesignSystem.ColorToken.accentCyan, lineWidth: 1.5)
+                                )
+                                .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(viewModel.isAssistModeActive ? 0.5 : 0), radius: 5)
+                            }
+                            .padding(.top, 4)
+                            .transition(.scale.combined(with: .opacity))
                         }
                     }
                     
@@ -158,6 +176,14 @@ struct GameView: View {
                     viewModel: viewModel,
                     level: currentLevel,
                     onDismiss: {
+                        log("result dismiss tapped; phase=\(viewModel.phase), level=\(currentLevel.id), scoreExists=\(viewModel.currentScore != nil)")
+                        if let score = viewModel.currentScore {
+                            onScoreReported?(score)
+                        }
+                        onDismiss()
+                    },
+                    onNext: {
+                        log("result next tapped; phase=\(viewModel.phase), level=\(currentLevel.id), autoAdvance=\(autoAdvance), scoreExists=\(viewModel.currentScore != nil)")
                         if let score = viewModel.currentScore {
                             onScoreReported?(score)
                         }
@@ -198,13 +224,32 @@ struct GameView: View {
             }
         }
         .onAppear {
-            print("GameView: onAppear for level \(currentLevel.id)")
-            viewModel.startLevel(currentLevel)
+            log("onAppear; level=\(currentLevel.id), phase=\(viewModel.phase), vmLevel=\(viewModel.currentLevel?.id.description ?? "nil"), autoAdvance=\(autoAdvance)")
+            if viewModel.phase == .idle || viewModel.currentLevel?.id != currentLevel.id {
+                log("onAppear starting level \(currentLevel.id)")
+                viewModel.startLevel(currentLevel)
+            } else {
+                log("onAppear skipped start; vm already at level \(viewModel.currentLevel?.id.description ?? "nil") phase=\(viewModel.phase)")
+            }
+        }
+        .onDisappear {
+            log("onDisappear; level=\(currentLevel.id), phase=\(viewModel.phase), vmLevel=\(viewModel.currentLevel?.id.description ?? "nil"), showVictory=\(showVictory), showTierAscension=\(showTierAscension)")
+        }
+        .onChange(of: currentLevel.id) { oldValue, newValue in
+            log("binding currentLevel changed \(oldValue) -> \(newValue); phase=\(viewModel.phase), vmLevel=\(viewModel.currentLevel?.id.description ?? "nil")")
+        }
+        .onChange(of: viewModel.phase) { oldValue, newValue in
+            log("phase changed \(oldValue) -> \(newValue); level=\(currentLevel.id), vmLevel=\(viewModel.currentLevel?.id.description ?? "nil"), scoreExists=\(viewModel.currentScore != nil)")
         }
         .onChange(of: showTierAscension) { _, visible in
+            log("showTierAscension changed to \(visible); level=\(currentLevel.id), phase=\(viewModel.phase)")
             if !visible && viewModel.phase == .preparingLevel {
+                log("tier ascension hidden; starting level \(currentLevel.id)")
                 viewModel.startLevel(currentLevel)
             }
+        }
+        .onChange(of: showVictory) { oldValue, newValue in
+            log("showVictory changed \(oldValue) -> \(newValue); level=\(currentLevel.id), phase=\(viewModel.phase)")
         }
         .onChange(of: viewModel.timerBoostPulseToken) { _, _ in
             withAnimation(.spring(response: 0.22, dampingFraction: 0.45)) {
@@ -225,41 +270,48 @@ struct GameView: View {
     
     private func advanceToNextLevel() {
         let nextID = currentLevel.id + 1
+        log("advanceToNextLevel requested; currentLevel=\(currentLevel.id), nextID=\(nextID), phase=\(viewModel.phase), purchased=\(PurchaseManager.shared.isPurchased)")
         
         // Trigger paywall lock if entering premium territory
         if nextID > 15 && !PurchaseManager.shared.isPurchased {
-            print("GameView: Next level \(nextID) locked behind paywall. Dismissing to trigger paywall overlay.")
+            log("next level \(nextID) locked behind paywall; dismissing to trigger paywall overlay")
             onDismiss()
             return
         }
         
         if let nextLevel = LevelRepository.shared.level(for: nextID) {
-            print("GameView: Advancing smoothly to Level \(nextID)")
+            log("found next level \(nextID) (\(nextLevel.title)); current difficulty=\(currentLevel.difficulty), next difficulty=\(nextLevel.difficulty)")
             
             let oldDifficulty = self.currentLevel.difficulty
             let newDifficulty = nextLevel.difficulty
             
             if oldDifficulty != newDifficulty {
+                log("difficulty changed \(oldDifficulty) -> \(newDifficulty); showing tier ascension")
                 self.previousDifficultyTitle = oldDifficulty.rawValue.capitalized
+                viewModel.phase = .preparingLevel
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     self.showTierAscension = true
                     self.currentLevel = nextLevel
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    log("tier ascension timer fired; hiding tier ascension for level \(currentLevel.id)")
                     withAnimation {
                         self.showTierAscension = false
                     }
                 }
             } else {
+                log("same difficulty; updating currentLevel binding to \(nextID) and starting level")
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     self.currentLevel = nextLevel
                 }
                 viewModel.startLevel(nextLevel)
             }
         } else {
-            print("GameView: Final level completed. Showing victory.")
+            log("no next level for id \(nextID); showing victory")
             _ = ProgressStore.shared.claimFinalRewardIfNeeded()
+            UserDefaults.standard.removeObject(forKey: "ResumeLevelID")
+            UserDefaults.standard.removeObject(forKey: "ZenModeLevelID")
             showVictory = true
         }
     }
@@ -273,6 +325,10 @@ struct GameView: View {
         case .evaluating: return "Evaluating..."
         case .result, .failed, .paywall: return ""
         }
+    }
+    
+    private func log(_ message: String) {
+        print("[GameView] \(message)")
     }
 }
 

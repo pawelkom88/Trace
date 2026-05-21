@@ -7,19 +7,10 @@ class ProgressStore: ObservableObject {
     
     private let defaults = UserDefaults.standard
     private let key = "TraceProgress"
-    private let maxLevel = 50
     
     init() {
         if let data = defaults.data(forKey: key),
-           var decoded = try? JSONDecoder().decode(TraceProgress.self, from: data) {
-            decoded.hasFullUnlock = true
-            if decoded.gems == nil {
-                decoded.gems = 100
-            }
-            if decoded.hasClaimedFinalReward == nil {
-                decoded.hasClaimedFinalReward = false
-            }
-            decoded.highestUnlockedLevel = min(decoded.highestUnlockedLevel, maxLevel)
+           let decoded = try? JSONDecoder().decode(TraceProgress.self, from: data) {
             self.progress = decoded
         } else {
             self.progress = TraceProgress(
@@ -30,12 +21,10 @@ class ProgressStore: ObservableObject {
                 currentStreak: 0,
                 bestStreak: 0,
                 hasCompletedTutorial: false,
-                hasFullUnlock: true,
+                hasFullUnlock: false,
                 dailyStreak: 0,
                 lastDailyCompletionDate: nil,
-                dailyScoresByDate: [:],
-                gems: 100,
-                hasClaimedFinalReward: false
+                dailyScoresByDate: [:]
             )
         }
     }
@@ -77,7 +66,7 @@ class ProgressStore: ObservableObject {
         }
         
         if id == progress.highestUnlockedLevel {
-            progress.highestUnlockedLevel = min(progress.highestUnlockedLevel + 1, maxLevel)
+            progress.highestUnlockedLevel += 1
         }
         
         progress.currentStreak += 1
@@ -106,6 +95,7 @@ class ProgressStore: ObservableObject {
     }
     
     func resetProgress() {
+        let hasUnlock = progress.hasFullUnlock
         progress = TraceProgress(
             highestUnlockedLevel: 1,
             completedLevelIDs: [],
@@ -114,39 +104,36 @@ class ProgressStore: ObservableObject {
             currentStreak: 0,
             bestStreak: 0,
             hasCompletedTutorial: false,
-            hasFullUnlock: true,
+            hasFullUnlock: hasUnlock,
             dailyStreak: 0,
             lastDailyCompletionDate: nil,
-            dailyScoresByDate: [:],
-            gems: 100,
-            hasClaimedFinalReward: false
+            dailyScoresByDate: [:]
         )
         save()
     }
-    
+
+    @discardableResult
     func spendGems(_ amount: Int) -> Bool {
         let current = progress.gems ?? 100
-        if current >= amount {
-            progress.gems = current - amount
-            save()
-            return true
-        }
-        return false
+        guard amount > 0, current >= amount else { return false }
+        progress.gems = current - amount
+        save()
+        return true
     }
-    
+
     func addGems(_ amount: Int) {
+        guard amount > 0 else { return }
         let current = progress.gems ?? 100
         progress.gems = current + amount
         save()
     }
-    
+
+    @discardableResult
     func claimFinalRewardIfNeeded() -> Bool {
-        if progress.hasClaimedFinalReward == true {
-            return false
-        }
-        addGems(200)
-        progress.hasClaimedFinalReward = true
-        save()
+        let rewardKey = "TraceFinalRewardClaimed"
+        guard !defaults.bool(forKey: rewardKey) else { return false }
+        addGems(100)
+        defaults.set(true, forKey: rewardKey)
         return true
     }
 }

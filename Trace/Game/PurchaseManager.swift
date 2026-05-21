@@ -13,18 +13,12 @@ class PurchaseManager: ObservableObject {
     @Published var lastErrorMessage: String?
     
     private let productID = "trace.full.unlock"
-    private let gemProductIDs = [
-        "trace.gems.50",
-        "trace.gems.180",
-        "trace.gems.350",
-        "trace.gems.800"
-    ]
-    
+    private let gemProductIDs = ["trace.gems.50", "trace.gems.180", "trace.gems.350", "trace.gems.800"]
     private var updatesTask: Task<Void, Never>? = nil
     private var isInitialized = false
     
     init() {
-        self.isPurchased = true
+        self.isPurchased = ProgressStore.shared.progress.hasFullUnlock
     }
     
     func initialize() {
@@ -58,12 +52,9 @@ class PurchaseManager: ObservableObject {
         defer { isLoadingProducts = false }
         
         do {
-            let products = try await Product.products(for: [productID])
+            let products = try await Product.products(for: [productID] + gemProductIDs)
             self.unlockProduct = products.first
-            
-            let gems = try await Product.products(for: gemProductIDs)
-            self.gemProducts = gems.sorted { $0.price < $1.price }
-            print("PurchaseManager: Loaded \(self.gemProducts.count) gem products.")
+            self.gemProducts = products.filter { gemProductIDs.contains($0.id) }
         } catch {
             print("Failed to load products: \(error)")
             lastErrorMessage = "Unable to load purchase options right now."
@@ -71,6 +62,8 @@ class PurchaseManager: ObservableObject {
     }
     
     func purchase() async {
+        lastErrorMessage = nil
+        
         if unlockProduct == nil {
             await loadProducts()
         }
@@ -80,11 +73,6 @@ class PurchaseManager: ObservableObject {
             return
         }
         
-        await purchase(product)
-    }
-    
-    func purchase(_ product: Product) async {
-        lastErrorMessage = nil
         isPerformingPurchase = true
         defer { isPerformingPurchase = false }
         
@@ -95,30 +83,9 @@ class PurchaseManager: ObservableObject {
                 switch verification {
                 case .verified(let transaction):
                     await transaction.finish()
-                    
-                    // Play purchase success feedback
-                    HapticsManager.shared.perfect()
-                    SoundManager.shared.perfect()
-                    
-                    if transaction.productID == productID {
-                        self.isPurchased = true
-                        ProgressStore.shared.unlockFullGame()
-                        await updatePurchasedState()
-                    } else if transaction.productID.hasPrefix("trace.gems.") {
-                        let gemsToAdd: Int
-                        switch transaction.productID {
-                        case "trace.gems.50": gemsToAdd = 50
-                        case "trace.gems.180": gemsToAdd = 180
-                        case "trace.gems.350": gemsToAdd = 350
-                        case "trace.gems.800": gemsToAdd = 800
-                        default: gemsToAdd = 0
-                        }
-                        
-                        if gemsToAdd > 0 {
-                            ProgressStore.shared.addGems(gemsToAdd)
-                            print("Gems credited to account: +\(gemsToAdd)")
-                        }
-                    }
+                    self.isPurchased = true
+                    ProgressStore.shared.unlockFullGame()
+                    await updatePurchasedState()
                 case .unverified(_, _):
                     lastErrorMessage = "Purchase verification failed."
                 }
@@ -151,9 +118,65 @@ class PurchaseManager: ObservableObject {
             lastErrorMessage = "Restore failed. Please try again."
         }
     }
+
+    func purchase(_ product: Product) async {
+        lastErrorMessage = nil
+        isPerformingPurchase = true
+        defer { isPerformingPurchase = false }
+
+        do {
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verification):
+                switch verification {
+                case .verified(let transaction):
+                    await transaction.finish()
+                    if product.id == productID {
+                        self.isPurchased = true
+                        ProgressStore.shared.unlockFullGame()
+                        await updatePurchasedState()
+                    } else if let gems = gemsForProductID(product.id) {
+                        ProgressStore.shared.addGems(gems)
+                    }
+                case .unverified(_, _):
+                    lastErrorMessage = "Purchase verification failed."
+                }
+            case .userCancelled:
+                break
+            case .pending:
+                lastErrorMessage = "Purchase is pending approval."
+            @unknown default:
+                lastErrorMessage = "Purchase did not complete."
+            }
+        } catch {
+            print("Purchase failed: \(error)")
+            lastErrorMessage = "Purchase failed. Please try again."
+        }
+    }
+
+    private func gemsForProductID(_ id: String) -> Int? {
+        switch id {
+        case "trace.gems.50": return 50
+        case "trace.gems.180": return 180
+        case "trace.gems.350": return 350
+        case "trace.gems.800": return 800
+        default: return nil
+        }
+    }
     
     private func updatePurchasedState() async {
-        self.isPurchased = true
-        ProgressStore.shared.unlockFullGame()
+        var hasUnlock = false
+        for await result in Transaction.currentEntitlements {
+            if case .verified(let transaction) = result {
+                if transaction.productID == productID {
+                    hasUnlock = true
+                }
+            }
+        }
+        
+        self.isPurchased = hasUnlock
+        if hasUnlock {
+            ProgressStore.shared.unlockFullGame()
+        }
     }
 }

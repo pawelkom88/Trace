@@ -66,6 +66,8 @@ struct SettingsView: View {
                     .confirmationDialog("Are you sure?", isPresented: $showResetConfirm, titleVisibility: .visible) {
                         Button("Reset Progress", role: .destructive) {
                             ProgressStore.shared.resetProgress()
+                            UserDefaults.standard.removeObject(forKey: "ResumeLevelID")
+                            UserDefaults.standard.removeObject(forKey: "ZenModeLevelID")
                             dismiss() // Wipes progress and redirects immediately back to Home screen
                         }
                         Button("Cancel", role: .cancel) {}
@@ -75,7 +77,7 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    Text("Trace works offline. No account. No backend.")
+                    Text("PathMinder works offline. No account. No backend.")
                         .font(DesignSystem.Typography.caption)
                         .foregroundColor(DesignSystem.ColorToken.textSecondary)
                         .multilineTextAlignment(.center)
