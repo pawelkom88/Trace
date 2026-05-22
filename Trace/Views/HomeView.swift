@@ -6,8 +6,6 @@ struct HomeView: View {
     
     @State private var showingPaywall = false
     @State private var showingSettings = false
-    @State private var showingDaily = false
-    @State private var showingPractice = false
     @State private var showingLeaderboard = false
     @State private var showingGame = false
     @State private var activeGameLevel = LevelRepository.shared.level(for: 1)!
@@ -25,60 +23,74 @@ struct HomeView: View {
         NavigationStack {
             ZStack {
                 DesignSystem.ColorToken.backgroundPrimary.ignoresSafeArea()
-                DesignSystem.GradientToken.backgroundGlow.ignoresSafeArea()
+                Image("HomeBackground")
+                    .resizable()
+                    .scaledToFill()
+                    .scaleEffect(1.34)
+                    .ignoresSafeArea()
+                    .overlay(Color.black.opacity(0.08))
                 
-                VStack(spacing: DesignSystem.Spacing.xl) {
-                    if progressStore.progress.globalPrestigeScore > 0 {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("PRESTIGE SCORE")
-                                    .font(.system(size: 11, weight: .bold))
-                                    .foregroundColor(DesignSystem.ColorToken.textSecondary)
-                                    .tracking(1.5)
-                                Text("\(progressStore.progress.globalPrestigeScore)")
-                                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                                    .foregroundColor(.yellow)
-                            }
-                            Spacer()
-                        }
-                        .padding(.horizontal, DesignSystem.Spacing.xl)
-                        .padding(.top, 50)
-                    } else {
+                VStack(spacing: 0) {
+                    HStack(alignment: .top) {
                         Spacer()
-                            .frame(height: 50)
+                        
+                        if progressStore.progress.globalPrestigeScore > 0 {
+                            VStack(alignment: .trailing, spacing: 6) {
+                                Text("PRESTIGE SCORE")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.white.opacity(0.58))
+                                    .tracking(2.8)
+                                Text("\(progressStore.progress.globalPrestigeScore)")
+                                    .font(.system(size: 48, weight: .light, design: .rounded))
+                                    .foregroundColor(Color(red: 1.0, green: 0.84, blue: 0.62))
+                                    .shadow(color: Color(red: 1.0, green: 0.84, blue: 0.62).opacity(0.18), radius: 14)
+                            }
+                        }
                     }
+                    .padding(.horizontal, 36)
+                    .padding(.top, 68)
                     
-                    Spacer()
+                    Spacer(minLength: 230)
                     
-                    VStack(spacing: DesignSystem.Spacing.sm) {
-                        Text("PATHMINDER")
-                            .font(.system(size: 72, weight: .black, design: .rounded))
-                            .tracking(8)
+                    VStack(spacing: 18) {
+                        VStack(spacing: 6) {
+                            Text("PATH")
+                            Text("MINDER")
+                        }
+                        .font(.system(size: 72, weight: .light, design: .rounded))
+                        .tracking(18)
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.white, Color(red: 0.78, green: 0.86, blue: 1.0)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .shadow(color: .white.opacity(0.48), radius: 12)
+                        .shadow(color: Color(red: 0.42, green: 0.64, blue: 1.0).opacity(0.34), radius: 26)
+                        
+                        Text("Watch it. Follow it. Don’t lift.")
+                            .font(.system(size: 24, weight: .medium))
                             .foregroundStyle(
                                 LinearGradient(
-                                    colors: [.white, .white.opacity(0.8)],
+                                    colors: [.white.opacity(0.72), .white.opacity(0.38)],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
                             )
-                            .shadow(color: Color.white.opacity(0.15), radius: 10, x: 0, y: 5)
-                        
-                        Text("Watch it. Follow it. Don’t lift.")
-                            .font(DesignSystem.Typography.subtitle)
-                            .foregroundColor(DesignSystem.ColorToken.textSecondary)
                     }
+                    .padding(.bottom, 30)
                     
-                    Spacer()
-                    
-                    VStack(spacing: DesignSystem.Spacing.md) {
+                    VStack(spacing: 18) {
                         Button(action: handleStartContinue) {
                             Text(resumeLevelID > 1 ? "Continue Level \(resumeLevelID)" : "Start")
                                 .font(DesignSystem.Typography.subtitle)
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
-                                .padding()
+                                .frame(height: 62)
                                 .background(DesignSystem.GradientToken.primaryCTA)
                                 .cornerRadius(DesignSystem.Radius.pill)
+                                .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.28), radius: 18, y: 8)
                         }
                         
                         Button(action: { showingLeaderboard = true }) {
@@ -90,61 +102,42 @@ struct HomeView: View {
                                     .foregroundColor(.white)
                             }
                             .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(DesignSystem.ColorToken.surface)
+                            .frame(height: 62)
+                            .background(Color.white.opacity(0.08))
                             .cornerRadius(DesignSystem.Radius.pill)
                             .overlay(
                                 RoundedRectangle(cornerRadius: DesignSystem.Radius.pill)
-                                    .stroke(DesignSystem.ColorToken.surfaceBorder, lineWidth: 1)
+                                    .stroke(Color.white.opacity(0.26), lineWidth: 1)
                             )
                         }
-                        
-                        Button(action: {
-                            if purchaseManager.isPurchased {
-                                showingDaily = true
-                            } else {
-                                showingPaywall = true
-                            }
-                        }) {
-                            Text("Daily Challenge")
-                                .font(DesignSystem.Typography.subtitle)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(DesignSystem.ColorToken.surface)
-                                .cornerRadius(DesignSystem.Radius.pill)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: DesignSystem.Radius.pill)
-                                        .stroke(DesignSystem.ColorToken.surfaceBorder, lineWidth: 1)
-                                )
-                        }
-                        
-                        Button(action: { showingPractice = true }) {
-                            Text("Practice")
-                                .font(DesignSystem.Typography.subtitle)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(DesignSystem.ColorToken.surface)
-                                .cornerRadius(DesignSystem.Radius.pill)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: DesignSystem.Radius.pill)
-                                        .stroke(DesignSystem.ColorToken.surfaceBorder, lineWidth: 1)
-                                )
-                        }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.xl)
+                    .padding(.horizontal, 34)
+                    .padding(.vertical, 24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 32)
+                            .fill(Color(red: 0.04, green: 0.04, blue: 0.10).opacity(0.72))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 32)
+                                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                            )
+                            .shadow(color: Color.black.opacity(0.35), radius: 28, y: 16)
+                    )
+                    .padding(.horizontal, 24)
                     
                     HStack {
                         Spacer()
                         Button(action: { showingSettings = true }) {
                             Image(systemName: "gearshape.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                                .font(.system(size: 26))
+                                .foregroundColor(.white.opacity(0.64))
+                                .frame(width: 64, height: 64)
+                                .background(Circle().fill(Color.white.opacity(0.08)))
+                                .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 1))
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Spacing.xl)
-                    .padding(.bottom, DesignSystem.Spacing.md)
+                    .padding(.horizontal, 34)
+                    .padding(.top, 28)
+                    .padding(.bottom, 34)
                 }
             }
             .id(refreshID)
@@ -166,12 +159,6 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showingSettings) {
                 SettingsView()
-            }
-            .fullScreenCover(isPresented: $showingDaily) {
-                DailyChallengeView(onDismiss: { showingDaily = false })
-            }
-            .fullScreenCover(isPresented: $showingPractice) {
-                PracticeView(onDismiss: { showingPractice = false })
             }
             .fullScreenCover(isPresented: $showingLeaderboard) {
                 LeaderboardView(onDismiss: { showingLeaderboard = false })
