@@ -24,7 +24,7 @@ struct PaywallView: View {
                     .padding(.horizontal, DesignSystem.Spacing.xl)
                 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                    FeatureRow(text: "60 more levels")
+                    FeatureRow(text: "35 more levels")
                     FeatureRow(text: "Harder patterns")
                     FeatureRow(text: "Daily Challenge")
                     FeatureRow(text: "Local stats")

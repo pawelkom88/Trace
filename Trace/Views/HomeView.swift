@@ -99,8 +99,13 @@ struct HomeView: View {
                             )
                         }
                         
-                        /*
-                        Button(action: { showingDaily = true }) {
+                        Button(action: {
+                            if purchaseManager.isPurchased {
+                                showingDaily = true
+                            } else {
+                                showingPaywall = true
+                            }
+                        }) {
                             Text("Daily Challenge")
                                 .font(DesignSystem.Typography.subtitle)
                                 .foregroundColor(.white)
@@ -127,7 +132,6 @@ struct HomeView: View {
                                         .stroke(DesignSystem.ColorToken.surfaceBorder, lineWidth: 1)
                                 )
                         }
-                        */
                     }
                     .padding(.horizontal, DesignSystem.Spacing.xl)
                     

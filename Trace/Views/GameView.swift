@@ -43,26 +43,31 @@ struct GameView: View {
                     // Center: Level & Target Stats
                     VStack(spacing: 2) {
                         Text("Level \(currentLevel.id)")
-                            .font(DesignSystem.Typography.subtitle)
+                            .font(DesignSystem.Typography.title)
                             .foregroundColor(DesignSystem.ColorToken.textPrimary)
                             .id("level-title-\(currentLevel.id)") // Force refresh for animation if needed
                             .onLongPressGesture {
                                 viewModel.cheatComplete()
                             }
                         
-                        HStack(spacing: DesignSystem.Spacing.md) {
+                        HStack(spacing: 12) {
                             HStack(spacing: 4) {
                                 Image(systemName: "timer")
                                 Text(String(format: "%.1fs", viewModel.timerBoostDisplayValue > 0 ? viewModel.timerBoostDisplayValue : currentLevel.maxTraceDuration))
                                     .scaleEffect(timerScale)
                                     .foregroundColor(timerHighlight ? DesignSystem.ColorToken.accentCyan : DesignSystem.ColorToken.textSecondary)
                             }
+                            
+                            Rectangle()
+                                .fill(DesignSystem.ColorToken.textSecondary.opacity(0.3))
+                                .frame(width: 1, height: 14)
+                            
                             HStack(spacing: 4) {
-                                Image(systemName: "target")
+                                Image(systemName: "bullseye")
                                 Text("\(Int(currentLevel.passThreshold * 100))%")
                             }
                         }
-                        .font(DesignSystem.Typography.caption)
+                        .font(.title3)
                         .foregroundColor(DesignSystem.ColorToken.textSecondary)
                         .padding(.top, 2)
                         
@@ -133,7 +138,7 @@ struct GameView: View {
                 
                 // Instructions
                 Text(instructionText.isEmpty ? " " : instructionText)
-                    .font(DesignSystem.Typography.title)
+                    .font(DesignSystem.Typography.subtitle)
                     .foregroundColor(DesignSystem.ColorToken.textPrimary)
                     .padding(.top, DesignSystem.Spacing.xs)
                     .opacity(instructionText.isEmpty ? 0.0 : 1.0)

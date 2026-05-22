@@ -83,11 +83,11 @@ enum DesignSystem {
     }
     
     enum Typography {
-        static let title = Font.body.bold()
-        static let subtitle = Font.body.weight(.semibold)
+        static let title = Font.title.bold()
+        static let subtitle = Font.title2.weight(.semibold)
         static let body = Font.body
-        static let caption = Font.body
-        static let heroScore = Font.body.weight(.black)
+        static let caption = Font.subheadline
+        static let heroScore = Font.system(size: 64, weight: .black)
     }
     
     enum Stroke {

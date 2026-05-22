@@ -53,7 +53,7 @@ class PurchaseManager: ObservableObject {
         
         do {
             let products = try await Product.products(for: [productID] + gemProductIDs)
-            self.unlockProduct = products.first
+            self.unlockProduct = products.first { $0.id == productID }
             self.gemProducts = products.filter { gemProductIDs.contains($0.id) }
         } catch {
             print("Failed to load products: \(error)")
