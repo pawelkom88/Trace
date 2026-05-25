@@ -32,6 +32,7 @@ class DailyChallengeGenerator {
             
             let level = TraceLevel(
                 id: id,
+                variantIndex: 0,
                 title: "Daily \(i+1)",
                 difficulty: .normal,
                 pattern: TracePattern(points: points),

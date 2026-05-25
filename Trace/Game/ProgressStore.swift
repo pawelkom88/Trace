@@ -68,6 +68,7 @@ class ProgressStore: ObservableObject {
         if id == progress.highestUnlockedLevel {
             progress.highestUnlockedLevel += 1
         }
+        LevelVariantStore.shared.clearLockedVariant(for: id)
         
         progress.currentStreak += 1
         if progress.currentStreak > progress.bestStreak {
@@ -109,6 +110,7 @@ class ProgressStore: ObservableObject {
             lastDailyCompletionDate: nil,
             dailyScoresByDate: [:]
         )
+        LevelVariantStore.shared.clearAllLockedVariants()
         save()
     }
 

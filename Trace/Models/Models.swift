@@ -24,6 +24,7 @@ enum EndZoneVisibility: Codable, Equatable {
 
 struct TraceLevel: Identifiable, Codable, Equatable {
     let id: Int
+    let variantIndex: Int
     let title: String
     let difficulty: TraceDifficulty
     let pattern: TracePattern

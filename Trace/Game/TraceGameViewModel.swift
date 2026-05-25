@@ -34,6 +34,7 @@ class TraceGameViewModel: ObservableObject {
         log("startLevel \(level.id) (\(level.title)); isRetry=\(isRetry), previousLevel=\(currentLevel?.id.description ?? "nil"), previousPhase=\(phase), screenSize=\(screenSize)")
         
         UserDefaults.standard.set(level.id, forKey: "ResumeLevelID")
+        LevelVariantStore.shared.lockVariant(level.variantIndex, for: level.id)
         log("stored ResumeLevelID=\(level.id)")
         
         let isLevelChanged = currentLevel?.id != level.id

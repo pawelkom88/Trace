@@ -11,20 +11,26 @@ struct PaywallView: View {
             
             VStack(spacing: DesignSystem.Spacing.lg) {
                 Spacer()
+
+                Image("PurchaseUnlock")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 150, height: 150)
                 
                 Text("You’re getting good.")
                     .font(DesignSystem.Typography.title)
                     .foregroundColor(DesignSystem.ColorToken.textPrimary)
                     .multilineTextAlignment(.center)
                 
-                Text("You’ve completed the first 15 levels. Unlock the full game to continue with harder patterns and sharper challenges.")
+                Text("You’ve completed the first 15 levels. Unlock the full game to continue with harder patterns, daily variants, and sharper challenges.")
                     .font(DesignSystem.Typography.body)
                     .foregroundColor(DesignSystem.ColorToken.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DesignSystem.Spacing.xl)
                 
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                    FeatureRow(text: "35 more levels")
+                    FeatureRow(text: "35 premium levels")
+                    FeatureRow(text: "Daily rotating variants")
                     FeatureRow(text: "Harder patterns")
                     FeatureRow(text: "Daily Challenge")
                     FeatureRow(text: "Local stats")

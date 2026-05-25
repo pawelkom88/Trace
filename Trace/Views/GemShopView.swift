@@ -115,24 +115,24 @@ struct GemShopView: View {
     private func packFor(productID: String, product: Product) -> GemPack {
         switch productID {
         case "trace.gems.50":
-            return GemPack(id: productID, name: "Shard of Gems", gemCount: 50, priceString: product.displayPrice, description: "50 Gems for tracing lifelines", bonusText: nil, color: DesignSystem.ColorToken.lifelinePhantom, iconName: "eye")
+            return GemPack(id: productID, name: "Shard of Gems", gemCount: 50, priceString: product.displayPrice, description: "50 Gems for tracing lifelines", bonusText: nil, color: DesignSystem.ColorToken.lifelinePhantom, iconName: "eye", imageName: "Gems50")
         case "trace.gems.180":
-            return GemPack(id: productID, name: "Cluster of Gems", gemCount: 180, priceString: product.displayPrice, description: "180 Gems - Slight power boost", bonusText: "+20% Bonus", color: DesignSystem.ColorToken.lifelineZen, iconName: "snowflake")
+            return GemPack(id: productID, name: "Cluster of Gems", gemCount: 180, priceString: product.displayPrice, description: "180 Gems - Slight power boost", bonusText: "+20% Bonus", color: DesignSystem.ColorToken.lifelineZen, iconName: "snowflake", imageName: "Gems180")
         case "trace.gems.350":
-            return GemPack(id: productID, name: "Geode of Gems", gemCount: 350, priceString: product.displayPrice, description: "350 Gems - Keep the streak alive", bonusText: "+40% Bonus", color: DesignSystem.ColorToken.accentBlue, iconName: "diamond.fill")
+            return GemPack(id: productID, name: "Geode of Gems", gemCount: 350, priceString: product.displayPrice, description: "350 Gems - Keep the streak alive", bonusText: "+40% Bonus", color: DesignSystem.ColorToken.accentBlue, iconName: "diamond.fill", imageName: "Gems350")
         case "trace.gems.800":
-            return GemPack(id: productID, name: "Supernova Vault", gemCount: 800, priceString: product.displayPrice, description: "800 Gems - Ultimate value vault", bonusText: "+60% Bonus", color: DesignSystem.ColorToken.lifelineWormhole, iconName: "aqi.medium")
+            return GemPack(id: productID, name: "Supernova Vault", gemCount: 800, priceString: product.displayPrice, description: "800 Gems - Ultimate value vault", bonusText: "+60% Bonus", color: DesignSystem.ColorToken.lifelineWormhole, iconName: "aqi.medium", imageName: "Gems800")
         default:
-            return GemPack(id: productID, name: product.displayName, gemCount: 50, priceString: product.displayPrice, description: product.description, bonusText: nil, color: DesignSystem.ColorToken.gemPrimary, iconName: "diamond")
+            return GemPack(id: productID, name: product.displayName, gemCount: 50, priceString: product.displayPrice, description: product.description, bonusText: nil, color: DesignSystem.ColorToken.gemPrimary, iconName: "diamond", imageName: "Gems50")
         }
     }
     
     private var fallbackPacks: [GemPack] {
         [
-            GemPack(id: "trace.gems.50", name: "Shard of Gems", gemCount: 50, priceString: "$0.99", description: "50 Gems for tracing lifelines", bonusText: nil, color: DesignSystem.ColorToken.lifelinePhantom, iconName: "eye"),
-            GemPack(id: "trace.gems.180", name: "Cluster of Gems", gemCount: 180, priceString: "$2.99", description: "180 Gems - Slight power boost", bonusText: "+20% Bonus", color: DesignSystem.ColorToken.lifelineZen, iconName: "snowflake"),
-            GemPack(id: "trace.gems.350", name: "Geode of Gems", gemCount: 350, priceString: "$4.99", description: "350 Gems - Keep the streak alive", bonusText: "+40% Bonus", color: DesignSystem.ColorToken.accentBlue, iconName: "diamond.fill"),
-            GemPack(id: "trace.gems.800", name: "Supernova Vault", gemCount: 800, priceString: "$9.99", description: "800 Gems - Ultimate value vault", bonusText: "+60% Bonus", color: DesignSystem.ColorToken.lifelineWormhole, iconName: "aqi.medium")
+            GemPack(id: "trace.gems.50", name: "Shard of Gems", gemCount: 50, priceString: "$0.99", description: "50 Gems for tracing lifelines", bonusText: nil, color: DesignSystem.ColorToken.lifelinePhantom, iconName: "eye", imageName: "Gems50"),
+            GemPack(id: "trace.gems.180", name: "Cluster of Gems", gemCount: 180, priceString: "$2.99", description: "180 Gems - Slight power boost", bonusText: "+20% Bonus", color: DesignSystem.ColorToken.lifelineZen, iconName: "snowflake", imageName: "Gems180"),
+            GemPack(id: "trace.gems.350", name: "Geode of Gems", gemCount: 350, priceString: "$4.99", description: "350 Gems - Keep the streak alive", bonusText: "+40% Bonus", color: DesignSystem.ColorToken.accentBlue, iconName: "diamond.fill", imageName: "Gems350"),
+            GemPack(id: "trace.gems.800", name: "Supernova Vault", gemCount: 800, priceString: "$9.99", description: "800 Gems - Ultimate value vault", bonusText: "+60% Bonus", color: DesignSystem.ColorToken.lifelineWormhole, iconName: "aqi.medium", imageName: "Gems800")
         ]
     }
 }
@@ -146,6 +146,7 @@ struct GemPack: Identifiable {
     let bonusText: String?
     let color: Color
     let iconName: String
+    let imageName: String
 }
 
 struct GemPackRow: View {
@@ -161,9 +162,10 @@ struct GemPackRow: View {
                         .fill(pack.color.opacity(0.12))
                         .frame(width: 50, height: 50)
                     
-                    Image(systemName: pack.iconName)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundColor(pack.color)
+                    Image(pack.imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 50, height: 50)
                         .shadow(color: pack.color.opacity(0.4), radius: 6)
                 }
                 
