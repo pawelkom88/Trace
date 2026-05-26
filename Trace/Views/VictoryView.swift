@@ -14,11 +14,22 @@ struct VictoryView: View {
                     .foregroundColor(.white)
                     .scaleEffect(pop ? 1.0 : 0.88)
 
-                Text("All 50 levels cleared")
+                Image(systemName: "star.circle.fill")
+                    .font(.system(size: 74, weight: .bold))
+                    .foregroundColor(Color(red: 1.0, green: 0.84, blue: 0.25))
+                    .shadow(color: Color(red: 1.0, green: 0.84, blue: 0.25).opacity(0.45), radius: 18)
+
+                Text("ALL-TIME STAR EARNED")
+                    .font(.system(size: 20, weight: .black, design: .rounded))
+                    .tracking(1.4)
+                    .foregroundColor(Color(red: 1.0, green: 0.84, blue: 0.25))
+                    .multilineTextAlignment(.center)
+
+                Text("All bonus levels cleared")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
 
-                Text("+200 GEMS")
+                Text("+100 GEMS")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundColor(DesignSystem.ColorToken.gemPrimary)
                     .padding(.horizontal, 20)

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Path Minder Privacy Policy</title>
+<meta name="description" content="Path Minder privacy policy. Offline play, local-only progress, no account system, and App Store in-app purchases handled by Apple.">
+<link rel="canonical" href="https://pathminder.netlify.app/privacy.html">
+<meta name="theme-color" content="#03070f">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Path Minder Privacy Policy">
+<meta property="og:description" content="Path Minder is private by design: offline play, local progress, no account, and App Store purchases handled by Apple.">
+<meta property="og:url" content="https://pathminder.netlify.app/privacy.html">
+<meta property="og:image" content="https://pathminder.netlify.app/OG-image.webp">
+<meta property="og:image:type" content="image/webp">
+<meta property="og:site_name" content="Path Minder">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Path Minder Privacy Policy">
+<meta name="twitter:description" content="Offline play, local-only progress, no account, and App Store purchases handled by Apple.">
+<meta name="twitter:image" content="https://pathminder.netlify.app/OG-image.webp">
+<link rel="icon" href="app-icon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c:#00d4ff;--cd:rgba(0,212,255,0.15);--cs:rgba(0,212,255,0.35);
+  --a:#ffb300;--r:#ff5555;
+  --bg:#03070f;--b2:#060c17;--b3:#09111f;
+  --t:#ffffff;--td:rgba(255,255,255,0.75);--tm:rgba(255,255,255,0.52);
+  --border:rgba(0,212,255,0.12);--bstrong:rgba(0,212,255,0.32);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--t);
+  font-family:'Share Tech Mono',monospace;
+  overflow-x:hidden;cursor:crosshair;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(0,212,255,0.07) 1px,transparent 1px);
+  background-size:36px 36px;pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);
+  pointer-events:none;z-index:1;animation:scan 10s linear infinite;
+}
+@keyframes scan{0%{background-position:0 0}100%{background-position:0 120px}}
+nav,main,footer{position:relative;z-index:3}
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:18px 56px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(3,7,15,0.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:inline-flex;align-items:center;text-decoration:none}
+.nav-logo img{
+  width:42px;height:42px;border-radius:10px;display:block;
+  box-shadow:0 0 22px rgba(0,212,255,0.22);
+}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{
+  color:rgba(255,255,255,0.78);text-decoration:none;font-size:12px;
+  letter-spacing:3px;text-transform:uppercase;padding:6px 2px;
+}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--c);outline:none}
+.nav-cta{
+  background:transparent;border:1px solid var(--c);color:var(--c);
+  padding:9px 22px;font-family:'Share Tech Mono',monospace;
+  font-size:12px;letter-spacing:3px;text-transform:uppercase;
+  text-decoration:none;display:inline-block;
+}
+.nav-cta:hover,.nav-cta:focus-visible{background:var(--c);color:var(--bg);outline:none}
+.hero{
+  padding:148px 80px 72px;
+  border-bottom:1px solid var(--border);
+}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:end;
+}
+.hero-meta{
+  font-size:11px;color:var(--tm);letter-spacing:4px;
+  margin-bottom:18px;
+}
+.hero-status{
+  font-size:13px;color:var(--c);letter-spacing:2px;
+  margin-bottom:34px;
+}
+.hero-h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(40px,6vw,88px);line-height:0.95;letter-spacing:1px;
+  margin-bottom:26px;
+}
+.hero-h1 span{display:block}
+.hero-h1 .accent{color:var(--c);text-shadow:0 0 60px rgba(0,212,255,0.35)}
+.hero-brief{
+  max-width:760px;font-size:16px;line-height:1.9;color:var(--td);
+}
+.hero-brief em{color:var(--a);font-style:normal}
+.hero-side{
+  border:1px solid var(--border);background:rgba(6,12,23,0.88);
+  padding:28px 26px;position:relative;
+}
+.hero-side::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at top right,rgba(0,212,255,0.10),transparent 55%);
+  pointer-events:none;
+}
+.side-label{font-size:10px;color:var(--tm);letter-spacing:4px;margin-bottom:14px}
+.side-value{
+  font-family:'Orbitron',sans-serif;font-size:28px;color:var(--c);
+  margin-bottom:10px;
+}
+.side-copy{font-size:13px;line-height:1.8;color:var(--td)}
+.content{
+  padding:72px 80px 110px;
+}
+.section-intro{
+  margin-bottom:28px;
+}
+.section-tag{
+  font-size:11px;color:var(--tm);letter-spacing:5px;
+  text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-tag::before{content:'';width:32px;height:1px;background:var(--c);opacity:0.5}
+.section-title{
+  font-family:'Orbitron',sans-serif;font-size:clamp(34px,4vw,58px);
+  line-height:0.95;
+}
+.section-title em{color:var(--a);font-style:normal;display:block}
+.policy-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;
+  border:1px solid var(--border);background:var(--border);
+}
+.policy-card{
+  background:var(--b3);padding:34px 32px;min-height:250px;position:relative;
+}
+.policy-n{
+  position:absolute;top:18px;right:22px;
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:42px;
+  color:rgba(0,212,255,0.06);
+}
+.policy-card h2{
+  font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:1px;
+  color:#fff;margin-bottom:16px;max-width:85%;
+}
+.policy-card p,.policy-card li{
+  font-size:14px;line-height:1.9;color:var(--td);
+}
+.policy-card ul{padding-left:18px}
+.summary{
+  margin-top:54px;
+  border:1px solid var(--bstrong);background:rgba(0,212,255,0.04);
+  padding:24px 26px;
+}
+.summary h3{
+  font-family:'Orbitron',sans-serif;font-size:18px;color:var(--c);
+  letter-spacing:1px;margin-bottom:10px;
+}
+.summary p{font-size:14px;line-height:1.9;color:var(--td)}
+footer{
+  padding:36px 80px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;position:relative;z-index:3;background:var(--bg);
+}
+.f-logo{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;color:var(--tm)}
+.f-txt{font-size:11px;color:var(--tm);letter-spacing:2px}
+.f-txt a{color:var(--td);text-decoration:none}
+.f-txt a:hover,.f-txt a:focus-visible{color:var(--c)}
+@media (max-width:1024px){
+  nav{padding:16px 32px}
+  .hero{padding:136px 48px 64px}
+  .hero-grid{grid-template-columns:1fr;gap:28px}
+  .content{padding:64px 48px 96px}
+  .policy-grid{grid-template-columns:1fr}
+  footer{padding:28px 48px}
+}
+@media (max-width:768px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .nav-logo img{width:34px;height:34px;border-radius:8px}
+  .hero{padding:104px 24px 48px}
+  .hero-h1{font-size:clamp(36px,12vw,64px)}
+  .hero-brief{font-size:15px}
+  .content{padding:48px 24px 80px}
+  .policy-card{padding:28px 24px;min-height:auto}
+  .policy-card h2{max-width:100%}
+  footer{padding:24px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="https://pathminder.netlify.app/" class="nav-logo"><img src="app-icon.png" alt="Path Minder"></a>
+  <ul class="nav-links">
+    <li><a href="https://pathminder.netlify.app/#mission">HOW IT WORKS</a></li>
+    <li><a href="https://pathminder.netlify.app/#features">FEATURES</a></li>
+    <li><a href="https://pathminder.netlify.app/#intel">UNLOCK</a></li>
+    <li><a href="privacy.html">PRIVACY</a></li>
+  </ul>
+  <a href="https://pathminder.netlify.app/" class="nav-cta">BACK TO APP</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <p class="hero-meta">PRIVACY POLICY &nbsp;|&nbsp; LAST UPDATED: MAY 26, 2026</p>
+      <div class="hero-status">&gt; PRIVACY STATUS: LOCAL STORAGE ONLY</div>
+      <h1 class="hero-h1">
+        <span>PRIVATE.</span>
+        <span class="accent">OFFLINE.</span>
+        <span>NO ACCOUNT.</span>
+      </h1>
+      <p class="hero-brief">Path Minder is built so you can <em>open the game and play</em> without creating an account, handing over profile data, or staying connected. This page explains what the app stores locally, what Apple handles for purchases, and what Path Minder does <em>not</em> do.</p>
+    </div>
+    <aside class="hero-side" aria-label="Privacy summary">
+      <div class="side-label">PRIVACY SNAPSHOT</div>
+      <div class="side-value">LOCAL ONLY</div>
+      <p class="side-copy">Progress, unlock state, settings, gems, and local stats are stored on your device. Purchases are processed through Apple.</p>
+    </aside>
+  </div>
+</section>
+
+<main class="content">
+  <div class="section-intro">
+    <p class="section-tag">POLICY.INTEL</p>
+    <h2 class="section-title">WHAT PATH MINDER<br><em>COLLECTS AND WHY.</em></h2>
+  </div>
+
+  <div class="policy-grid">
+    <section class="policy-card">
+      <div class="policy-n">01</div>
+      <h2>NO ACCOUNT, NO SIGN-IN, NO PLAYER PROFILE</h2>
+      <p>Path Minder does not ask you to create an account. There is no username system, no profile dashboard, and no cloud identity managed by us. You can install the app and play immediately.</p>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">02</div>
+      <h2>WHAT THE APP STORES ON YOUR DEVICE</h2>
+      <p>The app stores gameplay data locally using on-device storage. That includes unlocked levels, completed levels, best scores, streak values, gem balance, sound and haptic settings, tutorial status, resume state, and saved level variants. This is used so the game can remember your progress and settings between sessions.</p>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">03</div>
+      <h2>OFFLINE PLAY</h2>
+      <p>Path Minder is designed to work offline. Core gameplay, local progress, saved settings, and unlocked content do not require an active internet connection. If you never make a purchase, you can still play the free portion of the game without being online.</p>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">04</div>
+      <h2>IN-APP PURCHASES</h2>
+      <p>Optional purchases such as the full game unlock and gem packs are processed by Apple through StoreKit and the App Store. We receive the minimum purchase state needed to unlock content or add purchased gems. Path Minder does not receive or store your payment card details.</p>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">05</div>
+      <h2>WHAT PATH MINDER DOES NOT DO</h2>
+      <ul>
+        <li>No third-party ads.</li>
+        <li>No analytics account required to play.</li>
+        <li>No sale of personal information.</li>
+        <li>No contact list, photo library, microphone, or location access for gameplay.</li>
+      </ul>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">06</div>
+      <h2>BACKUPS AND APPLE SERVICES</h2>
+      <p>If your device backs up app data through Apple services, local game data may be included in that backup under Apple's systems and policies. That backup behavior is controlled by Apple and your device settings, not by a Path Minder account service.</p>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">07</div>
+      <h2>CHILDREN AND GENERAL AUDIENCE USE</h2>
+      <p>Path Minder is a general audience puzzle game. If you believe personal information has been provided to us directly in error, contact us and we will address the request based on what we can actually access. In normal use, the app is designed to avoid collecting direct personal information from players.</p>
+    </section>
+
+    <section class="policy-card">
+      <div class="policy-n">08</div>
+      <h2>CONTACT</h2>
+      <p>If you have privacy questions, data questions, or a policy request, contact <a style="color: white" href="mailto:hello@productivitymacapps.com">hello@productivitymacapps.com</a>.</p>
+    </section>
+  </div>
+
+  <section class="summary" aria-label="Plain-language summary">
+    <h3>PLAIN-LANGUAGE SUMMARY</h3>
+    <p>Path Minder is built to keep things simple: the game runs offline, stores progress on your device, and uses Apple for payments. That protects you because there is no Path Minder account database holding your game identity, no ad network profiling your play, and no subscription system quietly renewing in the background.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="f-logo">PATH MINDER</div>
+  <div class="f-txt">© 2026 PATH MINDER. ALL RIGHTS RESERVED &nbsp;|&nbsp; <a href="mailto:hello@productivitymacapps.com">hello@productivitymacapps.com</a></div>
+</footer>
+</body>
+</html>

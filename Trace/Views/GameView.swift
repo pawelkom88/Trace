@@ -10,6 +10,8 @@ struct GameView: View {
     @State private var showTierAscension = false
     @State private var previousDifficultyTitle = ""
     @State private var showVictory = false
+    @State private var showBonusUnlock = false
+    @State private var unlockedBonusLevel: TraceLevel?
     @State private var timerScale: CGFloat = 1.0
     @State private var timerHighlight = false
     var autoAdvance: Bool = false
@@ -175,6 +177,18 @@ struct GameView: View {
             
             if showVictory {
                 VictoryView(onDismiss: onDismiss)
+            } else if showBonusUnlock, let unlockedBonusLevel {
+                BonusUnlockView(
+                    onPlay: {
+                        log("bonus unlock play tapped; starting level \(unlockedBonusLevel.id)")
+                        showBonusUnlock = false
+                        currentLevel = unlockedBonusLevel
+                        viewModel.startLevel(unlockedBonusLevel)
+                    },
+                    onDismiss: onDismiss
+                )
+                .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                .zIndex(120)
             } else if viewModel.phase == .result || viewModel.phase == .failed {
                 ResultView(
                     score: viewModel.currentScore,
@@ -286,6 +300,15 @@ struct GameView: View {
         
         if let nextLevel = LevelRepository.shared.level(for: nextID) {
             log("found next level \(nextID) (\(nextLevel.title)); current difficulty=\(currentLevel.difficulty), next difficulty=\(nextLevel.difficulty)")
+
+            if currentLevel.id == 50 {
+                log("level 50 cleared; showing bonus unlock")
+                unlockedBonusLevel = nextLevel
+                withAnimation(.spring(response: 0.45, dampingFraction: 0.82)) {
+                    showBonusUnlock = true
+                }
+                return
+            }
             
             let oldDifficulty = self.currentLevel.difficulty
             let newDifficulty = nextLevel.difficulty
@@ -334,6 +357,122 @@ struct GameView: View {
     
     private func log(_ message: String) {
         print("[GameView] \(message)")
+    }
+}
+
+struct BonusUnlockView: View {
+    var onPlay: () -> Void
+    var onDismiss: () -> Void
+    @State private var pop = false
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.94).ignoresSafeArea()
+
+            GeometryReader { proxy in
+                let compactHeight = proxy.size.height < 760
+
+                VStack(spacing: compactHeight ? 16 : 22) {
+                    Spacer(minLength: compactHeight ? 18 : 34)
+
+                    HStack(spacing: 12) {
+                        Rectangle()
+                            .fill(DesignSystem.ColorToken.accentCyan.opacity(0.45))
+                            .frame(height: 1)
+                        Text("LEVEL 50 REACHED")
+                            .font(.system(size: 13, weight: .bold))
+                            .tracking(5)
+                            .foregroundColor(DesignSystem.ColorToken.accentCyan)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        Rectangle()
+                            .fill(DesignSystem.ColorToken.accentCyan.opacity(0.45))
+                            .frame(height: 1)
+                    }
+                    .padding(.horizontal, 36)
+
+                    VStack(spacing: 0) {
+                        Text("15 NEW LEVELS")
+                            .font(.system(size: compactHeight ? 42 : 54, weight: .black, design: .rounded))
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.55)
+                        Text("UNLOCKED")
+                            .font(.system(size: compactHeight ? 50 : 68, weight: .black, design: .rounded))
+                            .foregroundColor(DesignSystem.ColorToken.accentCyan)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.55)
+                            .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.45), radius: 18)
+                    }
+                    .scaleEffect(pop ? 1.0 : 0.92)
+
+                    Text("You mastered the core path.\nLonger speed challenges are now open.")
+                        .font(.system(size: compactHeight ? 17 : 20, weight: .medium))
+                        .foregroundColor(.white.opacity(0.78))
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(4)
+                        .minimumScaleFactor(0.85)
+                        .padding(.horizontal, 28)
+
+                    HStack(spacing: 10) {
+                        Image(systemName: "sparkle")
+                            .foregroundColor(DesignSystem.ColorToken.accentCyan)
+                        Text("Bonus Levels 51-65")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 22)
+                    .padding(.vertical, 12)
+                    .background(Capsule().fill(Color.white.opacity(0.06)))
+                    .overlay(Capsule().stroke(DesignSystem.ColorToken.accentCyan.opacity(0.35), lineWidth: 1.5))
+
+                    ZStack {
+                        Circle()
+                            .stroke(DesignSystem.ColorToken.accentCyan.opacity(0.65), style: StrokeStyle(lineWidth: 10, lineCap: .round, dash: [46, 20]))
+                            .frame(width: compactHeight ? 170 : 220, height: compactHeight ? 170 : 220)
+                            .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.45), radius: 16)
+                        VStack(spacing: 2) {
+                            Text("15")
+                                .font(.system(size: compactHeight ? 78 : 104, weight: .light, design: .rounded))
+                                .foregroundColor(DesignSystem.ColorToken.accentCyan)
+                                .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.7), radius: 14)
+                            Image(systemName: "lock.open.fill")
+                                .font(.system(size: compactHeight ? 34 : 44, weight: .bold))
+                                .foregroundColor(.white)
+                                .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.65), radius: 12)
+                        }
+                    }
+                    .padding(.top, compactHeight ? 6 : 14)
+
+                    Spacer(minLength: compactHeight ? 10 : 22)
+
+                    Button(action: onPlay) {
+                        Text("Play Level 51")
+                            .font(.system(size: 24, weight: .black))
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: compactHeight ? 58 : 68)
+                            .background(DesignSystem.GradientToken.primaryCTA)
+                            .cornerRadius(DesignSystem.Radius.pill)
+                    }
+                    .padding(.horizontal, 32)
+
+                    Button(action: onDismiss) {
+                        Text("Back Home")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.58))
+                            .padding(.vertical, 8)
+                    }
+                    .padding(.bottom, compactHeight ? 12 : 24)
+                }
+                .frame(width: proxy.size.width, height: proxy.size.height)
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.68)) {
+                pop = true
+            }
+        }
     }
 }
 

@@ -12,11 +12,12 @@ struct HomeView: View {
     @State private var refreshID = UUID()
     
     private var resumeLevelID: Int {
+        let maxLevelID = LevelRepository.shared.levels.last?.id ?? 1
         let savedID = UserDefaults.standard.integer(forKey: "ResumeLevelID")
         if savedID > 0 {
-            return savedID
+            return min(savedID, maxLevelID)
         }
-        return progressStore.progress.highestUnlockedLevel
+        return min(progressStore.progress.highestUnlockedLevel, maxLevelID)
     }
     
     var body: some View {
@@ -47,6 +48,25 @@ struct HomeView: View {
                             
                             if progressStore.progress.globalPrestigeScore > 0 {
                                 VStack(alignment: .trailing, spacing: 6) {
+                                    if progressStore.progress.hasAllTimeStar {
+                                        HStack(spacing: 6) {
+                                            Image(systemName: "star.circle.fill")
+                                                .font(.system(size: compactHeight ? 13 : 15, weight: .bold))
+                                            Text("ALL-TIME STAR")
+                                                .font(.system(size: compactHeight ? 10 : 12, weight: .black))
+                                                .tracking(1.4)
+                                        }
+                                        .foregroundColor(Color(red: 1.0, green: 0.84, blue: 0.25))
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(Capsule().fill(Color.black.opacity(0.28)))
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(Color(red: 1.0, green: 0.84, blue: 0.25).opacity(0.42), lineWidth: 1)
+                                        )
+                                        .shadow(color: Color(red: 1.0, green: 0.84, blue: 0.25).opacity(0.22), radius: 12)
+                                    }
+
                                     Text("PRESTIGE SCORE")
                                         .font(.system(size: compactHeight ? 11 : 13, weight: .semibold))
                                         .foregroundColor(.white.opacity(0.58))

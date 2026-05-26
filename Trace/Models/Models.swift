@@ -139,6 +139,10 @@ struct TraceProgress: Codable {
         let sum = bestScoresByLevel.values.reduce(0, +)
         return Int(sum * 10000)
     }
+
+    var hasAllTimeStar: Bool {
+        completedLevelIDs.contains(65)
+    }
 }
 
 enum GamePhase: Equatable {

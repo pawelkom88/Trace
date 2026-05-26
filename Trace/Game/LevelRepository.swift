@@ -169,6 +169,31 @@ struct LevelRepository {
             return pts
         }
 
+        func longSpeedPattern(id: Int) -> [NormalizedPoint] {
+            let starts: [NormalizedPoint] = [
+                NormalizedPoint(x: 0.06, y: 0.08),
+                NormalizedPoint(x: 0.94, y: 0.10),
+                NormalizedPoint(x: 0.92, y: 0.92),
+                NormalizedPoint(x: 0.08, y: 0.90)
+            ]
+            let start = starts[(id - 51) % starts.count]
+            let turn = Double((id - 51) % 5) * 0.08
+            let inner = [
+                NormalizedPoint(x: 0.12 + turn, y: 0.18),
+                NormalizedPoint(x: 0.88, y: 0.18 + turn),
+                NormalizedPoint(x: 0.82 - turn, y: 0.82),
+                NormalizedPoint(x: 0.18, y: 0.78 - turn),
+                NormalizedPoint(x: 0.24 + turn, y: 0.30),
+                NormalizedPoint(x: 0.72, y: 0.34 + turn),
+                NormalizedPoint(x: 0.66 - turn, y: 0.68),
+                NormalizedPoint(x: 0.34, y: 0.62 - turn),
+                NormalizedPoint(x: 0.40 + (turn * 0.5), y: 0.42),
+                NormalizedPoint(x: 0.60, y: 0.50 + (turn * 0.35)),
+                NormalizedPoint(x: 0.50, y: 0.58)
+            ]
+            return [start] + inner
+        }
+
         func seededPattern(id: Int, diff: TraceDifficulty, variantIndex: Int) -> [NormalizedPoint] {
             struct SeededGenerator {
                 var state: UInt64
@@ -286,6 +311,16 @@ struct LevelRepository {
                 title: "Pattern \(id)",
                 diff: diff,
                 points: seededPattern(id: id, diff: diff, variantIndex: variantIndex)
+            )
+        }
+
+        for id in 51...65 {
+            let variantIndex = LevelVariantStore.shared.variantIndex(for: id)
+            createLevel(
+                id: id,
+                title: "Speed Path \(id)",
+                diff: .expert,
+                points: variant(longSpeedPattern(id: id), index: variantIndex)
             )
         }
 
