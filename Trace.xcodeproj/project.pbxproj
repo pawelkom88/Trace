@@ -17,7 +17,6 @@
 		4683F16E9B78F94F97D04101 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCE9289A1EA53BBB2E09B409 /* SoundManager.swift */; };
 		4DA235397F4460E961FCBED5 /* wormhole.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4375F2AC5D99AE5A813E5134 /* wormhole.wav */; };
 		4DCB6C903191D695349B5772 /* soft-tick.wav in Resources */ = {isa = PBXBuildFile; fileRef = CE3449FAF82640C13094C956 /* soft-tick.wav */; };
-		4F58B78B62E374AA8408DC24 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 44B91C98BC9B2F9FA05C415F /* Products.storekit */; };
 		54FC81B9526E0C8E4008B477 /* LifelineExplainerModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B74CDF826902FB61812B7AD /* LifelineExplainerModal.swift */; };
 		5CEDA3D0573B05D0A988C573 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB06BBEF2C8C3C17CBF4F5 /* PaywallView.swift */; };
 		60048638856C993AB99281D4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421F3893294FBE6C5120A000 /* HomeView.swift */; };
@@ -58,7 +57,6 @@
 		421F3893294FBE6C5120A000 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		422EAF66422CC143A73F3CB5 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeView.swift; sourceTree = "<group>"; };
 		4375F2AC5D99AE5A813E5134 /* wormhole.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = wormhole.wav; sourceTree = "<group>"; };
-		44B91C98BC9B2F9FA05C415F /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		48357A1EB291DBDFC3AF0D84 /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
 		58B611077EDC8213A6CBAF3D /* VictoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VictoryView.swift; sourceTree = "<group>"; };
 		69F2E5200E563A0C0CC187F4 /* warning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = warning.wav; sourceTree = "<group>"; };
@@ -66,7 +64,7 @@
 		71A8D5D00C17CCA705A15A86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77C8D15B29F71CA6F4D71235 /* PathScoringEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathScoringEngine.swift; sourceTree = "<group>"; };
 		7906801E678BA53085F54A59 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		7D4A9E8B8874991FDAD13763 /* Trace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D4A9E8B8874991FDAD13763 /* PathMinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PathMinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ECC362BD2360CE51F4274F9 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		8B74CDF826902FB61812B7AD /* LifelineExplainerModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifelineExplainerModal.swift; sourceTree = "<group>"; };
 		8BA72FCFCABEE4D33A551770 /* TraceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceApp.swift; sourceTree = "<group>"; };
@@ -184,7 +182,6 @@
 			isa = PBXGroup;
 			children = (
 				71A8D5D00C17CCA705A15A86 /* Assets.xcassets */,
-				44B91C98BC9B2F9FA05C415F /* Products.storekit */,
 				96EAF3C1B65DFE556EC6DF7C /* App */,
 				52F62B7651B1354E3E442C1A /* Audio */,
 				297E454C085DA9279FAD8EC8 /* Components */,
@@ -199,7 +196,7 @@
 		FB11D82B9B31750C098A6C57 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7D4A9E8B8874991FDAD13763 /* Trace.app */,
+				7D4A9E8B8874991FDAD13763 /* PathMinder.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -222,7 +219,7 @@
 			packageProductDependencies = (
 			);
 			productName = Trace;
-			productReference = 7D4A9E8B8874991FDAD13763 /* Trace.app */;
+			productReference = 7D4A9E8B8874991FDAD13763 /* PathMinder.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -232,7 +229,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 1430;
 			};
 			buildConfigurationList = 1CCA988C642DA1E5AE56E926 /* Build configuration list for PBXProject "Trace" */;
 			developmentRegion = en;
@@ -259,7 +256,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2F968AFFD9FBFEC44D014D1 /* Assets.xcassets in Resources */,
-				4F58B78B62E374AA8408DC24 /* Products.storekit in Resources */,
 				64F1685257C3026FB4143FCF /* fail.wav in Resources */,
 				D80A7CD46572D819FF4AE770 /* perfect.wav in Resources */,
 				B03E0ADDEC1ED1C31303A1AF /* phantom.wav in Resources */,
@@ -315,7 +311,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -347,10 +342,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = PSTSAVTG6S;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -363,7 +356,6 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -376,7 +368,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PSTSAVTG6S;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = PathMinder;
+				INFOPLIST_KEY_CFBundleName = PathMinder;
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -389,8 +384,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.PathMinder;
+				PRODUCT_NAME = PathMinder;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -403,7 +399,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PSTSAVTG6S;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = PathMinder;
+				INFOPLIST_KEY_CFBundleName = PathMinder;
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -416,8 +415,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.PathMinder;
+				PRODUCT_NAME = PathMinder;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -428,7 +428,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -460,10 +459,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = PSTSAVTG6S;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -483,7 +480,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;

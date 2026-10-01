@@ -77,7 +77,7 @@ struct GemShopView: View {
                                     })
                                 }
                             } else {
-                                ForEach(purchaseManager.gemProducts, id: \.id) { product in
+                                ForEach(sortedGemProductsByPrice, id: \.id) { product in
                                     let pack = packFor(productID: product.id, product: product)
                                     GemPackRow(pack: pack, action: {
                                         Task {
@@ -110,6 +110,10 @@ struct GemShopView: View {
         .onAppear {
             purchaseManager.initialize()
         }
+    }
+    
+    private var sortedGemProductsByPrice: [Product] {
+        purchaseManager.gemProducts.sorted { $0.price < $1.price }
     }
     
     private func packFor(productID: String, product: Product) -> GemPack {

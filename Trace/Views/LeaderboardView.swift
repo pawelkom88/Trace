@@ -22,7 +22,7 @@ struct LeaderboardView: View {
         let title: String
         let difficulty: TraceDifficulty
         let score: Int
-        let accuracy: Double
+        let accuracy: Double?
     }
     
     struct AllTimeAttemptItem: Identifiable {
@@ -38,15 +38,19 @@ struct LeaderboardView: View {
     // Computes top best score per level
     var leaderboardItems: [LeaderboardRowItem] {
         let bestScores = progressStore.progress.bestScoresByLevel
-        return bestScores.compactMap { (levelId, accuracy) -> LeaderboardRowItem? in
+        let history = progressStore.progress.attemptHistoryByLevel ?? [:]
+        return bestScores.compactMap { (levelId, bestTotal) -> LeaderboardRowItem? in
             guard let level = LevelRepository.shared.level(for: levelId) else { return nil }
-            let score = Int(accuracy * 10000)
+            let score = Int(bestTotal * 10000)
+            let bestAttemptAccuracy = history[levelId]?
+                .max(by: { $0.points < $1.points })?
+                .accuracy
             return LeaderboardRowItem(
                 levelId: levelId,
                 title: level.title,
                 difficulty: level.difficulty,
                 score: score,
-                accuracy: accuracy
+                accuracy: bestAttemptAccuracy
             )
         }
         .sorted { $0.score > $1.score }
@@ -75,12 +79,8 @@ struct LeaderboardView: View {
         return items.sorted { $0.score > $1.score }
     }
     
-    // Computes the average accuracy of all completed levels
-    var averageAccuracy: Double {
-        let bestScores = progressStore.progress.bestScoresByLevel
-        guard !bestScores.isEmpty else { return 0.0 }
-        let total = bestScores.values.reduce(0.0, +)
-        return total / Double(bestScores.count)
+    var totalBestScore: Int {
+        progressStore.progress.globalPrestigeScore
     }
     
     var body: some View {
@@ -91,19 +91,19 @@ struct LeaderboardView: View {
                 
                 VStack(spacing: 0) {
                     
-                    // Average Accuracy Header Card
+                    // Total Score Header Card
                     VStack(spacing: DesignSystem.Spacing.xs) {
-                        Text("AVERAGE ACCURACY")
+                        Text("TOTAL SCORE")
                             .font(.system(size: 11, weight: .bold))
                             .foregroundColor(DesignSystem.ColorToken.textSecondary)
                             .tracking(2.0)
                         
-                        Text(String(format: "%.1f%%", averageAccuracy * 100))
+                        Text("\(totalBestScore)")
                             .font(.system(size: 40, weight: .black, design: .rounded))
                             .foregroundColor(DesignSystem.ColorToken.accentCyan)
                             .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.3), radius: 8)
                         
-                        Text("Overall precision across all completed levels")
+                        Text("Sum of your best score on each completed level")
                             .font(DesignSystem.Typography.caption)
                             .foregroundColor(DesignSystem.ColorToken.textSecondary)
                             .padding(.top, 2)
@@ -226,9 +226,11 @@ struct LeaderboardView: View {
                                         .font(.system(size: 20, weight: .bold, design: .rounded))
                                         .foregroundColor(.yellow)
                                     
-                                    Text("\(Int(item.accuracy * 100))% accuracy")
-                                        .font(DesignSystem.Typography.caption)
-                                        .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                                    if let accuracy = item.accuracy {
+                                        Text("\(Int(accuracy * 100))% accuracy")
+                                            .font(DesignSystem.Typography.caption)
+                                            .foregroundColor(DesignSystem.ColorToken.textSecondary)
+                                    }
                                 }
                             }
                             .padding()

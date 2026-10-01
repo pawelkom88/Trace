@@ -82,10 +82,10 @@ struct LevelRepository {
                 tolerance = 32.0
                 endZone = .faint
             case .hard:
-                tolerance = 22.0
+                tolerance = 20.0
                 endZone = .hidden
             case .expert:
-                tolerance = 14.0
+                tolerance = 13.0
                 endZone = .hidden
             }
 
@@ -146,6 +146,10 @@ struct LevelRepository {
         }
 
         func selectedFreePattern(id: Int, base: [NormalizedPoint]) -> [NormalizedPoint] {
+            if id <= 4 {
+                return base
+            }
+
             let variantIndex = LevelVariantStore.shared.variantIndex(for: id)
             return variant(base, index: variantIndex)
         }
@@ -169,29 +173,77 @@ struct LevelRepository {
             return pts
         }
 
-        func longSpeedPattern(id: Int) -> [NormalizedPoint] {
-            let starts: [NormalizedPoint] = [
-                NormalizedPoint(x: 0.06, y: 0.08),
-                NormalizedPoint(x: 0.94, y: 0.10),
-                NormalizedPoint(x: 0.92, y: 0.92),
-                NormalizedPoint(x: 0.08, y: 0.90)
-            ]
-            let start = starts[(id - 51) % starts.count]
-            let turn = Double((id - 51) % 5) * 0.08
-            let inner = [
-                NormalizedPoint(x: 0.12 + turn, y: 0.18),
-                NormalizedPoint(x: 0.88, y: 0.18 + turn),
-                NormalizedPoint(x: 0.82 - turn, y: 0.82),
-                NormalizedPoint(x: 0.18, y: 0.78 - turn),
-                NormalizedPoint(x: 0.24 + turn, y: 0.30),
-                NormalizedPoint(x: 0.72, y: 0.34 + turn),
-                NormalizedPoint(x: 0.66 - turn, y: 0.68),
-                NormalizedPoint(x: 0.34, y: 0.62 - turn),
-                NormalizedPoint(x: 0.40 + (turn * 0.5), y: 0.42),
-                NormalizedPoint(x: 0.60, y: 0.50 + (turn * 0.35)),
-                NormalizedPoint(x: 0.50, y: 0.58)
-            ]
-            return [start] + inner
+        func gridPoint(_ column: Int, _ row: Int) -> NormalizedPoint {
+            let columns = 6.0
+            let rows = 6.0
+            return NormalizedPoint(
+                x: 0.10 + (Double(column) / columns) * 0.80,
+                y: 0.10 + (Double(row) / rows) * 0.80
+            )
+        }
+
+        func bonusPattern(id: Int) -> [NormalizedPoint] {
+            switch id {
+            case 51:
+                return [gridPoint(0, 0), gridPoint(6, 0), gridPoint(6, 6), gridPoint(0, 6), gridPoint(0, 2), gridPoint(4, 2), gridPoint(4, 4), gridPoint(2, 4)]
+            case 52:
+                return [gridPoint(0, 1), gridPoint(2, 1), gridPoint(2, 0), gridPoint(4, 0), gridPoint(4, 2), gridPoint(6, 2), gridPoint(6, 4), gridPoint(3, 4), gridPoint(3, 6), gridPoint(0, 6)]
+            case 53:
+                return [gridPoint(1, 0), gridPoint(1, 6), gridPoint(2, 6), gridPoint(2, 1), gridPoint(3, 1), gridPoint(3, 6), gridPoint(4, 6), gridPoint(4, 0), gridPoint(5, 0), gridPoint(5, 6)]
+            case 54:
+                return [gridPoint(0, 3), gridPoint(3, 0), gridPoint(6, 3), gridPoint(3, 6), gridPoint(1, 4), gridPoint(5, 4), gridPoint(5, 2), gridPoint(1, 2), gridPoint(3, 0)]
+            case 55:
+                return [gridPoint(0, 0), gridPoint(6, 0), gridPoint(6, 1), gridPoint(1, 1), gridPoint(1, 5), gridPoint(5, 5), gridPoint(5, 2), gridPoint(2, 2), gridPoint(2, 6), gridPoint(6, 6)]
+            case 56:
+                return [gridPoint(0, 6), gridPoint(0, 0), gridPoint(6, 0), gridPoint(6, 6), gridPoint(5, 6), gridPoint(5, 1), gridPoint(1, 1), gridPoint(1, 5), gridPoint(4, 5), gridPoint(4, 2), gridPoint(2, 2)]
+            case 57:
+                return [gridPoint(0, 2), gridPoint(6, 2), gridPoint(6, 0), gridPoint(4, 0), gridPoint(4, 6), gridPoint(2, 6), gridPoint(2, 0), gridPoint(0, 0), gridPoint(0, 4), gridPoint(6, 4)]
+            case 58:
+                return [gridPoint(3, 0), gridPoint(6, 0), gridPoint(6, 3), gridPoint(3, 3), gridPoint(3, 6), gridPoint(0, 6), gridPoint(0, 3), gridPoint(2, 3), gridPoint(2, 1), gridPoint(5, 1)]
+            case 59:
+                return [gridPoint(0, 0), gridPoint(6, 6), gridPoint(6, 4), gridPoint(2, 4), gridPoint(2, 2), gridPoint(6, 2), gridPoint(6, 0), gridPoint(0, 6)]
+            case 60:
+                return [gridPoint(0, 5), gridPoint(1, 5), gridPoint(1, 1), gridPoint(2, 1), gridPoint(2, 5), gridPoint(3, 5), gridPoint(3, 1), gridPoint(4, 1), gridPoint(4, 5), gridPoint(5, 5), gridPoint(5, 1), gridPoint(6, 1)]
+            case 61:
+                return [gridPoint(0, 3), gridPoint(2, 3), gridPoint(2, 0), gridPoint(4, 0), gridPoint(4, 3), gridPoint(6, 3), gridPoint(6, 6), gridPoint(3, 6), gridPoint(3, 2), gridPoint(1, 2), gridPoint(1, 5)]
+            case 62:
+                return [gridPoint(0, 0), gridPoint(3, 0), gridPoint(3, 2), gridPoint(6, 2), gridPoint(6, 6), gridPoint(4, 6), gridPoint(4, 4), gridPoint(1, 4), gridPoint(1, 1), gridPoint(5, 1), gridPoint(5, 5)]
+            case 63:
+                return [gridPoint(0, 6), gridPoint(6, 0), gridPoint(4, 0), gridPoint(4, 4), gridPoint(6, 4), gridPoint(6, 6), gridPoint(2, 6), gridPoint(2, 2), gridPoint(0, 2), gridPoint(0, 0), gridPoint(3, 0)]
+            case 64:
+                return [gridPoint(0, 1), gridPoint(6, 1), gridPoint(6, 5), gridPoint(0, 5), gridPoint(0, 3), gridPoint(4, 3), gridPoint(4, 0), gridPoint(2, 0), gridPoint(2, 6), gridPoint(5, 6), gridPoint(5, 2)]
+            default:
+                return [gridPoint(0, 0), gridPoint(6, 0), gridPoint(6, 6), gridPoint(0, 6), gridPoint(0, 1), gridPoint(5, 1), gridPoint(5, 5), gridPoint(1, 5), gridPoint(1, 2), gridPoint(4, 2), gridPoint(4, 4), gridPoint(2, 4), gridPoint(2, 3), gridPoint(3, 3)]
+            }
+        }
+
+        func curatedProgressionPattern(id: Int) -> [NormalizedPoint]? {
+            switch id {
+            case 16:
+                return [gridPoint(1, 1), gridPoint(5, 1), gridPoint(5, 4), gridPoint(2, 4)]
+            case 18:
+                return [gridPoint(1, 5), gridPoint(1, 2), gridPoint(4, 2), gridPoint(4, 4), gridPoint(6, 4)]
+            case 26:
+                return [gridPoint(0, 3), gridPoint(3, 3), gridPoint(3, 1), gridPoint(6, 1), gridPoint(6, 5)]
+            case 31:
+                return [gridPoint(1, 1), gridPoint(5, 1), gridPoint(5, 5), gridPoint(2, 5), gridPoint(2, 3)]
+            case 32:
+                return [gridPoint(0, 2), gridPoint(2, 2), gridPoint(2, 5), gridPoint(5, 5), gridPoint(5, 1)]
+            case 34:
+                return [gridPoint(1, 0), gridPoint(1, 4), gridPoint(4, 4), gridPoint(4, 2), gridPoint(6, 2)]
+            case 36:
+                return [gridPoint(0, 5), gridPoint(3, 5), gridPoint(3, 2), gridPoint(6, 2), gridPoint(6, 0)]
+            case 37:
+                return [gridPoint(1, 1), gridPoint(5, 1), gridPoint(5, 3), gridPoint(2, 3), gridPoint(2, 6), gridPoint(6, 6)]
+            case 40:
+                return [gridPoint(0, 5), gridPoint(2, 3), gridPoint(0, 1), gridPoint(3, 1), gridPoint(6, 4), gridPoint(4, 6), gridPoint(1, 3)]
+            case 47:
+                return [gridPoint(0, 0), gridPoint(3, 3), gridPoint(6, 0), gridPoint(6, 2), gridPoint(2, 6), gridPoint(0, 4), gridPoint(4, 0)]
+            case 50:
+                return [gridPoint(0, 6), gridPoint(2, 4), gridPoint(0, 2), gridPoint(2, 0), gridPoint(6, 4), gridPoint(4, 6), gridPoint(1, 3), gridPoint(5, 1)]
+            default:
+                return nil
+            }
         }
 
         func seededPattern(id: Int, diff: TraceDifficulty, variantIndex: Int) -> [NormalizedPoint] {
@@ -306,11 +358,17 @@ struct LevelRepository {
             }
 
             let variantIndex = LevelVariantStore.shared.variantIndex(for: id)
+            let points = if let curatedPattern = curatedProgressionPattern(id: id) {
+                variant(curatedPattern, index: variantIndex)
+            } else {
+                seededPattern(id: id, diff: diff, variantIndex: variantIndex)
+            }
+
             createLevel(
                 id: id,
                 title: "Pattern \(id)",
                 diff: diff,
-                points: seededPattern(id: id, diff: diff, variantIndex: variantIndex)
+                points: points
             )
         }
 
@@ -320,7 +378,7 @@ struct LevelRepository {
                 id: id,
                 title: "Speed Path \(id)",
                 diff: .expert,
-                points: variant(longSpeedPattern(id: id), index: variantIndex)
+                points: variant(bonusPattern(id: id), index: variantIndex)
             )
         }
 

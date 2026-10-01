@@ -6,11 +6,15 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
-    sources: [Trace]
+    sources:
+      - path: Trace
+        excludes:
+          - Products.storekit
     settings:
       GENERATE_INFOPLIST_FILE: YES
       CURRENT_PROJECT_VERSION: 1
-      MARKETING_VERSION: 1.0
+      MARKETING_VERSION: 1.1
+      PRODUCT_NAME: PathMinder
       INFOPLIST_KEY_UILaunchScreen_Generation: YES
       INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
       INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
@@ -18,7 +22,9 @@ targets:
       INFOPLIST_KEY_UIRequiresFullScreen: YES
       INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
       INFOPLIST_KEY_UISupportedInterfaceOrientations~ipad: UIInterfaceOrientationPortrait
-      PRODUCT_BUNDLE_IDENTIFIER: com.example.Trace
+      INFOPLIST_KEY_CFBundleDisplayName: PathMinder
+      INFOPLIST_KEY_CFBundleName: PathMinder
+      PRODUCT_BUNDLE_IDENTIFIER: com.example.PathMinder
       SWIFT_VERSION: 5.0
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
@@ -29,6 +35,7 @@ schemes:
         Trace: all
     run:
       config: Debug
+      storeKitConfiguration: Trace/Products.storekit
     test:
       config: Debug
     archive:

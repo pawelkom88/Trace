@@ -82,9 +82,11 @@ struct PathScoringEngine {
         
         let avgDist = totalDist / 100.0
         
-        // Path Accuracy: Max score 1.0. Drops as avgDist approaches tolerance.
+        // Treat tolerance as the distance for a basic pass, not as a zero-score cliff.
         let activeTolerance = isAssistActive ? level.tolerance * 2.0 : level.tolerance
-        let pathAccuracy = max(0.0, 1.0 - (avgDist / activeTolerance))
+        let missRatio = avgDist / activeTolerance
+        let passScoreDrop = 1.0 - level.passThreshold
+        let pathAccuracy = max(0.0, 1.0 - (missRatio * passScoreDrop))
         
         // Speed: 1.0 if perfectly halfway through max time.
         let speedScore = max(0.0, 1.0 - (duration / level.maxTraceDuration))

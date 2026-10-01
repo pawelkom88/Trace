@@ -391,7 +391,7 @@ struct BonusUnlockView: View {
                     }
                     .padding(.horizontal, 36)
 
-                    VStack(spacing: 0) {
+                    VStack(spacing: compactHeight ? 2 : 4) {
                         Text("15 NEW LEVELS")
                             .font(.system(size: compactHeight ? 42 : 54, weight: .black, design: .rounded))
                             .foregroundColor(.white)
@@ -412,7 +412,7 @@ struct BonusUnlockView: View {
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
                         .minimumScaleFactor(0.85)
-                        .padding(.horizontal, 28)
+                        .padding(.horizontal, 36)
 
                     HStack(spacing: 10) {
                         Image(systemName: "sparkle")
@@ -426,34 +426,19 @@ struct BonusUnlockView: View {
                     .background(Capsule().fill(Color.white.opacity(0.06)))
                     .overlay(Capsule().stroke(DesignSystem.ColorToken.accentCyan.opacity(0.35), lineWidth: 1.5))
 
-                    ZStack {
-                        Circle()
-                            .stroke(DesignSystem.ColorToken.accentCyan.opacity(0.65), style: StrokeStyle(lineWidth: 10, lineCap: .round, dash: [46, 20]))
-                            .frame(width: compactHeight ? 170 : 220, height: compactHeight ? 170 : 220)
-                            .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.45), radius: 16)
-                        VStack(spacing: 2) {
-                            Text("15")
-                                .font(.system(size: compactHeight ? 78 : 104, weight: .light, design: .rounded))
-                                .foregroundColor(DesignSystem.ColorToken.accentCyan)
-                                .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.7), radius: 14)
-                            Image(systemName: "lock.open.fill")
-                                .font(.system(size: compactHeight ? 34 : 44, weight: .bold))
-                                .foregroundColor(.white)
-                                .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.65), radius: 12)
-                        }
-                    }
-                    .padding(.top, compactHeight ? 6 : 14)
-
-                    Spacer(minLength: compactHeight ? 10 : 22)
+                    Spacer(minLength: compactHeight ? 18 : 36)
 
                     Button(action: onPlay) {
                         Text("Play Level 51")
-                            .font(.system(size: 24, weight: .black))
-                            .foregroundColor(.black)
+                            .font(DesignSystem.Typography.subtitle)
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
                             .frame(maxWidth: .infinity)
                             .frame(height: compactHeight ? 58 : 68)
                             .background(DesignSystem.GradientToken.primaryCTA)
                             .cornerRadius(DesignSystem.Radius.pill)
+                            .shadow(color: DesignSystem.ColorToken.accentCyan.opacity(0.28), radius: 18, y: 8)
                     }
                     .padding(.horizontal, 32)
 
