@@ -1,2 +1,23 @@
-# Local Netlify folder
-.netlify
+# Xcode / iOS Build Artifacts
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdata
+*.xcscmblueprint
+*.dSYM/
+*.o
+*.pcm
+.build/
+.swiftpm/
+
+# Web / Netlify
+.netlify/
+node_modules/
+dist/
+
+# Test & OS Artifacts
+.playwright-mcp/
+.DS_Store
+**/.DS_Store
+._*
+.idea/
